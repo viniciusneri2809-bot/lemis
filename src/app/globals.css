@@ -1,22 +1,325 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "../";
 
-* {
-  scroll-behavior: smooth;
+@theme {
+  --color-*: initial;
+  --color-azul: #304cff;
+  --color-papel: #f4f1ea;
+  --color-tinta: #17191d;
+  --color-branco: #ffffff;
+  --color-secundario: #666a73;
+  --color-secundario-escuro: #adb2bd;
+  --color-azul-hover: #203ad9;
+  --color-azul-ativo: #182caf;
+  --color-fio-claro: color-mix(in srgb, #17191d 14%, transparent);
+  --color-fio-escuro: color-mix(in srgb, #ffffff 16%, transparent);
+
+  --font-sans: var(--font-geist), Arial, sans-serif;
+
+  --radius-*: initial;
+  --radius-md: 8px;
+
+  --animate-acordeao-abrir: acordeao-abrir 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-acordeao-fechar: acordeao-fechar 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-lemis: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-:root {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-azul);
+    color: var(--color-branco);
+  }
+  :focus-visible {
+    outline: 2px solid var(--cor-foco, var(--color-azul));
+    outline-offset: 3px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+@layer components {
+  /* Campos: cada um define a cor de foco para os controles dentro dele. */
+  .campo-papel {
+    background-color: var(--color-papel);
+    color: var(--color-tinta);
+    --cor-foco: var(--color-azul);
+  }
+  .campo-tinta {
+    background-color: var(--color-tinta);
+    color: var(--color-branco);
+    --cor-foco: var(--color-branco);
+  }
+  .campo-azul {
+    background-color: var(--color-azul);
+    color: var(--color-branco);
+    --cor-foco: var(--color-branco);
+  }
+
+  /* Escala tipográfica (sistema-visual.md §3). */
+  .t-display {
+    font-weight: 900;
+    font-size: clamp(2.75rem, 6.5vw, 6rem);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .t-titulo {
+    font-weight: 900;
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .t-sub {
+    font-weight: 600;
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+  }
+  .t-lead {
+    font-weight: 400;
+    font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .t-corpo {
+    font-weight: 400;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  @media (min-width: 768px) {
+    .t-corpo {
+      font-size: 1.125rem;
+    }
+  }
+  .t-legenda {
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  .t-rotulo {
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .t-controle {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -100%;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    background: var(--color-azul);
+    color: var(--color-branco);
+    font-weight: 600;
+  }
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  /* Conector: desenha-se com o scroll; estático sem suporte ou com movimento reduzido. */
+  .conector path {
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 0;
+  }
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .conector path {
+        stroke-dashoffset: 1;
+        animation: conector-desenhar linear both;
+        animation-timeline: view(block);
+        animation-range: entry 0% cover 35%;
+      }
+    }
+  }
+  @keyframes conector-desenhar {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .entra-hero { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .entra-hero {
+      opacity: 0;
+      animation: entra-hero 0.7s var(--ease-lemis) both;
+      animation-delay: calc(var(--i, 0) * 60ms + 60ms);
+    }
+  }
 }
 
-body {
-  background: #0a0a0a;
-  color: #ffffff;
-  font-family: var(--font-geist-sans), Arial, sans-serif;
+@property --fb-angulo {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes acordeao-abrir {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes acordeao-fechar {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
+@keyframes fb-girar {
+  to { --fb-angulo: 360deg; }
+}
+@keyframes feixe-correr {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes entra-hero {
+  from { opacity: 0; transform: translateY(0.5em); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@layer components {
+  /* Superfícies: anel de 1px + sombra suave + fundo um passo acima do campo. */
+  .superficie-clara {
+    background-color: var(--color-branco);
+    border: 1px solid color-mix(in srgb, var(--color-tinta) 10%, transparent);
+    border-radius: 16px;
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--color-tinta) 6%, transparent),
+      0 18px 44px -24px color-mix(in srgb, var(--color-tinta) 24%, transparent);
+  }
+  .superficie-escura {
+    background-color: color-mix(in srgb, var(--color-branco) 5%, var(--color-tinta));
+    border: 1px solid color-mix(in srgb, var(--color-branco) 12%, transparent);
+    border-radius: 16px;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--color-branco) 6%, transparent),
+      0 24px 60px -30px color-mix(in srgb, var(--color-tinta) 80%, transparent);
+  }
+
+  .glow-azul {
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--color-azul) 32%, transparent), transparent 72%);
+  }
+
+  /* Grão: ladrilho SVG estático, rasterizado uma vez. Tinta a 35% de alfa, em soft-light. */
+  .grao {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.1 0 0 0 0 0.11 0 0 0 0.35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 160px 160px;
+    mix-blend-mode: soft-light;
+  }
+
+  /* Holofote: luz azul que segue o cursor num campo escuro. */
+  .holofote {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-lemis);
+    background: radial-gradient(560px circle at var(--hx, 50%) var(--hy, 50%), color-mix(in srgb, var(--color-azul) 18%, transparent), transparent 62%);
+  }
+  @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .holofote-ativo > .holofote { opacity: 1; }
+  }
+
+  /* Card com realce radial no cursor e elevação no hover. */
+  .cartao-holofote {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s var(--ease-lemis), box-shadow 0.35s var(--ease-lemis), border-color 0.35s var(--ease-lemis);
+  }
+  .cartao-holofote::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-lemis);
+    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--color-azul) 11%, transparent), transparent 60%);
+  }
+  @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .cartao-holofote:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--color-azul) 35%, transparent);
+      box-shadow:
+        0 1px 2px color-mix(in srgb, var(--color-tinta) 6%, transparent),
+        0 28px 56px -24px color-mix(in srgb, var(--color-tinta) 32%, transparent);
+    }
+    .cartao-holofote:hover::before { opacity: 1; }
+  }
+
+  /* Feixe de borda: realce azul girando na borda (padrão Magic UI, na paleta). */
+  .feixe-borda { position: relative; }
+  .feixe-borda::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-lemis);
+    background: conic-gradient(from var(--fb-angulo), transparent 0deg, transparent 250deg, var(--color-azul) 320deg, transparent 360deg);
+    -webkit-mask: linear-gradient(var(--color-branco) 0 0) content-box, linear-gradient(var(--color-branco) 0 0);
+    mask: linear-gradient(var(--color-branco) 0 0) content-box, linear-gradient(var(--color-branco) 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .feixe-borda:hover::after,
+  .feixe-borda:focus-within::after,
+  .feixe-borda.feixe-ativo::after { opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .feixe-borda:hover::after,
+    .feixe-borda:focus-within::after,
+    .feixe-borda.feixe-ativo::after { animation: fb-girar 5s linear infinite; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feixe-borda::after {
+      background: conic-gradient(from 0deg, color-mix(in srgb, var(--color-azul) 60%, transparent), color-mix(in srgb, var(--color-azul) 60%, transparent));
+    }
+  }
+
+  /* Feixe de conexão: linha base + pulso azul percorrendo o caminho. */
+  .feixe-linha { stroke: color-mix(in srgb, var(--color-branco) 16%, transparent); }
+  .feixe-pulso { stroke: var(--color-azul); stroke-dasharray: 16 84; stroke-dashoffset: 100; opacity: 0; }
+  .feixe-brilho { filter: blur(4px); }
+  @media (prefers-reduced-motion: no-preference) {
+    .feixe-pulso {
+      opacity: 1;
+      animation: feixe-correr 3.2s linear infinite;
+      animation-delay: var(--feixe-atraso, 0s);
+    }
+    .feixe-brilho { opacity: 0.55; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feixe-linha { stroke: color-mix(in srgb, var(--color-azul) 70%, transparent); }
+  }
 }
