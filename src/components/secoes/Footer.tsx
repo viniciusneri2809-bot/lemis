@@ -51,7 +51,7 @@ export function Footer() {
               {rodape.razaoSocial} · {rodape.cnpj}
             </p>
             <p className="mt-1">{rodape.endereco}</p>
-            <p className="mt-4">© APL Digital</p>
+            <p className="mt-4">© Lemis</p>
           </div>
         </Revelar>
       </Container>
