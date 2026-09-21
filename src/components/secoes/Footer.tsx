@@ -3,7 +3,7 @@ import { Wordmark } from "@/components/marca/Wordmark";
 import { SetaExterna } from "@/components/ui/Botao";
 import { Container } from "@/components/ui/Container";
 import { LINK_WHATSAPP } from "@/lib/contato";
-import { nav, rodape } from "@/lib/conteudo";
+import { nav, rodape, textosDeInterface } from "@/lib/conteudo";
 
 export function Footer() {
   return (
@@ -12,13 +12,13 @@ export function Footer() {
         <Revelar>
           <div className="grid gap-y-12 lg:grid-cols-12 lg:gap-x-6">
             <div className="lg:col-span-5">
-              <a href="#inicio" aria-label="Lemis, voltar ao início" className="inline-block text-branco">
+              <a href="#inicio" aria-label={textosDeInterface.voltarAoInicio} className="inline-block text-branco">
                 <Wordmark className="h-auto w-32" />
               </a>
-              <p className="t-corpo mt-6 max-w-[30ch] text-secundario-escuro">{rodape.apoio}</p>
+              <p className="t-corpo mt-6 max-w-[34ch] text-secundario-escuro">{rodape.apoio}</p>
             </div>
 
-            <nav aria-label="Rodapé" className="lg:col-span-3 lg:col-start-7">
+            <nav aria-label={textosDeInterface.navRodape} className="lg:col-span-3 lg:col-start-7">
               <p className="t-rotulo text-secundario-escuro">{rodape.navegarRotulo}</p>
               <ul className="mt-4 space-y-2">
                 {nav.map((item) => (
@@ -41,7 +41,7 @@ export function Footer() {
               >
                 {rodape.whatsappRotulo}
                 <SetaExterna />
-                <span className="sr-only">(abre em nova aba)</span>
+                <span className="sr-only">{textosDeInterface.abreEmNovaAba}</span>
               </a>
             </div>
           </div>
@@ -51,7 +51,7 @@ export function Footer() {
               {rodape.razaoSocial} · {rodape.cnpj}
             </p>
             <p className="mt-1">{rodape.endereco}</p>
-            <p className="mt-4">© Lemis</p>
+            <p className="mt-4">{textosDeInterface.assinatura}</p>
           </div>
         </Revelar>
       </Container>

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { textosDeInterface } from "@/lib/conteudo";
 
 type Variante = "primario" | "sobre-azul" | "contorno-escuro";
 
@@ -50,7 +51,7 @@ export function Botao({ href, variante = "primario", externo = false, className 
       {externo ? (
         <>
           <SetaExterna />
-          <span className="sr-only">(abre em nova aba)</span>
+          <span className="sr-only">{textosDeInterface.abreEmNovaAba}</span>
         </>
       ) : null}
     </a>
