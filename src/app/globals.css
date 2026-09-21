@@ -11,10 +11,14 @@
   --color-secundario-escuro: #adb2bd;
   --color-azul-hover: #203ad9;
   --color-azul-ativo: #182caf;
+  /* Um degrau abaixo da tinta. Dá profundidade ao campo sem card: é o fundo da faixa
+     do hero e da laje das duas portas. `#000` tem 3 dígitos e não é cor de paleta. */
+  --color-tinta-funda: color-mix(in srgb, #17191d 82%, #000);
   --color-fio-claro: color-mix(in srgb, #17191d 14%, transparent);
   --color-fio-escuro: color-mix(in srgb, #ffffff 16%, transparent);
 
   --font-sans: var(--font-geist), Arial, sans-serif;
+  --font-destaque: var(--font-serif), Georgia, serif;
 
   --radius-*: initial;
   --radius-md: 8px;
@@ -38,6 +42,9 @@
   body {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    /* A sangria total mede 100vw, que inclui a barra de rolagem. `clip` corta a sobra sem
+       criar contexto de rolagem — `hidden` criaria, e o header sticky pararia de grudar. */
+    overflow-x: clip;
   }
   ::selection {
     background: var(--color-azul);
@@ -77,6 +84,15 @@
     line-height: 1.02;
     letter-spacing: -0.04em;
     text-wrap: balance;
+  }
+  /* Título de entrega: a copy descreve o que a casa implanta e é mais longa que
+     um slogan, então quem cede é a calibragem, não o texto (decisão de 20/09/2026,
+     decisoes/2026-09-20-composicao-cede-antes-do-texto). Mesmo peso do t-display,
+     teto de corpo menor e entrelinha um pouco maior. */
+  .t-display-denso {
+    font-size: clamp(2.125rem, 4.4vw, 4rem);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
   }
   .t-titulo {
     font-weight: 900;
@@ -129,6 +145,48 @@
     letter-spacing: -0.01em;
   }
 
+  /* Palavra em destaque: só dentro de t-display / t-titulo e em numerais de marco
+     (>= 40px). Azul sobre tinta e 3,02:1, aprovado so para texto grande. */
+  .t-destaque {
+    font-family: var(--font-destaque);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-azul);
+    letter-spacing: -0.01em;
+  }
+  /* Mesma serifa, sem o azul. Serve onde o numeral é pequeno demais para o azul sobre tinta:
+     em 24px o par fica em 3,02:1, exatamente no limite de "texto grande", e o traço fino da
+     Instrument Serif é o pior caso da regra. Branco sobre tinta é 15,9:1 em qualquer corpo. */
+  .t-destaque-claro {
+    color: var(--color-branco);
+  }
+
+  /* Cantoneiras: quatro "L" nos cantos do container da secao. */
+  .cantoneira {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: color-mix(in srgb, currentColor 25%, transparent);
+    border-style: solid;
+    border-width: 0;
+    pointer-events: none;
+  }
+  .campo-papel .cantoneira {
+    border-color: color-mix(in srgb, currentColor 14%, transparent);
+  }
+  .cantoneira-tl { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; }
+  .cantoneira-tr { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; }
+  .cantoneira-bl { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
+  .cantoneira-br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
+
+  /* Hachura fina nas margens externas (so xl). */
+  .hachura {
+    background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-branco) 4%, transparent) 0 1px, transparent 1px 10px);
+  }
+  .campo-papel .hachura {
+    background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-tinta) 5%, transparent) 0 1px, transparent 1px 10px);
+  }
+
   .skip-link {
     position: absolute;
     left: 1rem;
@@ -142,27 +200,6 @@
   }
   .skip-link:focus {
     top: 1rem;
-  }
-
-  /* Conector: desenha-se com o scroll; estático sem suporte ou com movimento reduzido. */
-  .conector path {
-    stroke-dasharray: 1 1;
-    stroke-dashoffset: 0;
-  }
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .conector path {
-        stroke-dashoffset: 1;
-        animation: conector-desenhar linear both;
-        animation-timeline: view(block);
-        animation-range: entry 0% cover 35%;
-      }
-    }
-  }
-  @keyframes conector-desenhar {
-    to {
-      stroke-dashoffset: 0;
-    }
   }
 
   .entra-hero { opacity: 1; }
@@ -191,10 +228,6 @@
 }
 @keyframes fb-girar {
   to { --fb-angulo: 360deg; }
-}
-@keyframes feixe-correr {
-  from { stroke-dashoffset: 100; }
-  to { stroke-dashoffset: 0; }
 }
 @keyframes entra-hero {
   from { opacity: 0; transform: translateY(0.5em); }
@@ -307,19 +340,169 @@ html.lenis, html.lenis body { height: auto; }
     }
   }
 
-  /* Feixe de conexão: linha base + pulso azul percorrendo o caminho. */
-  .feixe-linha { stroke: color-mix(in srgb, var(--color-branco) 16%, transparent); }
-  .feixe-pulso { stroke: var(--color-azul); stroke-dasharray: 16 84; stroke-dashoffset: 100; opacity: 0; }
-  .feixe-brilho { filter: blur(4px); }
-  @media (prefers-reduced-motion: no-preference) {
-    .feixe-pulso {
-      opacity: 1;
-      animation: feixe-correr 3.2s linear infinite;
-      animation-delay: var(--feixe-atraso, 0s);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Sistema editorial (direção B, 20/09/2026)
+   decisoes/2026-09-20-home-do-site-segue-a-direcao-editorial
+
+   A tese: o que faz a página bonita é contraste de escala e assimetria, não
+   superfície. Por isso quase toda caixa saiu e as larguras passaram a variar.
+   São sete medidas: o container (1408), a medida de texto (640), a sangria
+   total (100vw), a laje que sangra à direita, a folha que sangra à direita,
+   a folha que sangra à esquerda e a coluna de jornal.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  /* Medida de texto: a linha de leitura confortável, independente do container. */
+  .medida { max-width: 640px; }
+
+  /* Sangria total: o elemento sai do container e ocupa a largura da janela.
+     Funciona dentro ou fora do container, porque os dois são centrados.
+     A sobra da barra de rolagem é cortada pelo `overflow-x: clip` do body. */
+  .sangria { margin-inline: calc(50% - 50vw); }
+
+  /* Folha de papel deslocada: entra pela grade de um lado e sangra pelo outro.
+     O padding do lado que sangra recompõe a distância até a margem do container,
+     para o texto de dentro continuar alinhado com o resto da página. */
+  .folha {
+    border-radius: 24px 0 0 24px;
+    margin-left: 1rem;
+    margin-right: calc(50% - 50vw);
+    padding: 2.5rem 1.5rem;
+  }
+  .folha-esquerda {
+    border-radius: 0 24px 24px 0;
+    margin-left: calc(50% - 50vw);
+    margin-right: 1rem;
+  }
+  @media (min-width: 1024px) {
+    .folha {
+      border-radius: 32px 0 0 32px;
+      margin-left: calc(100% / 6);
+      padding: clamp(2.5rem, 5vw, 5rem);
+      padding-right: calc(50vw - 50% + clamp(2.5rem, 5vw, 5rem));
     }
-    .feixe-brilho { opacity: 0.55; }
+    .folha-esquerda {
+      border-radius: 0 32px 32px 0;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(100% / 12);
+      padding-left: calc(50vw - 50% + clamp(2.5rem, 5vw, 5rem));
+      padding-right: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+
+  /* Laje: o mesmo gesto da folha, em tinta funda. Serve às duas portas. */
+  .laje {
+    position: relative;
+    background-color: var(--color-tinta-funda);
+    border-radius: 24px 0 0 24px;
+    margin-right: calc(50% - 50vw);
+    padding: 2.5rem 1.5rem 3rem;
+  }
+  @media (min-width: 1024px) {
+    .laje {
+      border-radius: 32px 0 0 32px;
+      padding: 4rem 0 6rem clamp(2.5rem, 5vw, 4.5rem);
+    }
+  }
+
+  /* Numeral gigante: marca a seção cortado pela borda de cima. Decorativo, some
+     do leitor de tela e nunca recebe evento. Fica atrás de tudo (z-index 0). */
+  .numeral-gigante {
+    position: absolute;
+    left: -0.04em;
+    top: -0.12em;
+    z-index: 0;
+    font-family: var(--font-destaque);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(120px, 15vw, 220px);
+    line-height: 1;
+    color: color-mix(in srgb, var(--color-azul) 30%, var(--color-tinta));
+    pointer-events: none;
+    user-select: none;
+  }
+  /* Variante do centro: atrás do cartão de retenção, maior e mais apagado. */
+  .numeral-gigante-centro {
+    left: 50%;
+    top: 54%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(200px, 26vw, 380px);
+    color: color-mix(in srgb, var(--color-azul) 22%, var(--color-tinta));
+  }
+
+  /* Colunas de jornal: no desktop, quatro medidas diferentes separadas por filete.
+     No celular vira pilha com filete horizontal. */
+  .jornal {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--color-fio-escuro);
+  }
+  .jornal > li { padding: 2rem 0; border-top: 1px solid var(--color-fio-escuro); }
+  .jornal > li:first-child { border-top: 0; }
+  @media (min-width: 1024px) {
+    .jornal { grid-template-columns: 2fr 3fr 3fr 2fr; }
+    .jornal > li { padding: 2rem 1.75rem 0 0; border-top: 0; }
+    .jornal > li + li { border-left: 1px solid var(--color-fio-escuro); padding-left: 1.75rem; }
+  }
+
+  /* Lista editorial: numeral grande à esquerda, texto à direita, feixe correndo na margem. */
+  .lista-editorial {
+    position: relative;
+    display: grid;
+    row-gap: 2rem;
+    padding-left: 1.75rem;
+  }
+  .lista-editorial > li {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    column-gap: 1.5rem;
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .lista-editorial { row-gap: 3rem; padding-left: 2.5rem; }
+    .lista-editorial > li { grid-template-columns: 8.75rem 1fr; }
+  }
+
+  /* Feixe: filete com um pulso azul percorrendo. Substitui o SVG medido por JS
+     do painel antigo — aqui é CSS puro, sem cálculo de geometria no cliente. */
+  .feixe {
+    position: relative;
+    background: color-mix(in srgb, currentColor 16%, transparent);
+  }
+  .feixe-v { width: 2px; }
+  .feixe-h { height: 2px; }
+  .feixe::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    background: var(--color-azul);
+    filter: drop-shadow(0 0 6px var(--color-azul));
+    opacity: 0;
+  }
+  .feixe-v::after { top: 0; width: 100%; height: 22%; }
+  .feixe-h::after { left: 0; width: 22%; height: 100%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .feixe::after {
+      opacity: 1;
+      animation: feixe-desce 3.2s linear infinite;
+      animation-delay: var(--atraso, 0s);
+    }
+    .feixe-h::after { animation-name: feixe-corre; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .feixe-linha { stroke: color-mix(in srgb, var(--color-azul) 70%, transparent); }
+    .feixe { background: color-mix(in srgb, var(--color-azul) 70%, transparent); }
+    .feixe::after { display: none; }
   }
+}
+
+@keyframes feixe-desce {
+  from { top: -22%; }
+  to { top: 100%; }
+}
+@keyframes feixe-corre {
+  from { left: -22%; }
+  to { left: 100%; }
 }

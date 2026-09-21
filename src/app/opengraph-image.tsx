@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
+import { metadados } from "@/lib/conteudo";
 
-export const alt = "Lemis — O próximo passo tem direção.";
+export const alt = metadados.ogAlt;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

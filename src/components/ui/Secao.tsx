@@ -1,39 +1,71 @@
 import type { ReactNode } from "react";
-import { Conector } from "@/components/marca/Conector";
-import { Container } from "@/components/ui/Container";
+import { NumeralGigante } from "@/components/esquema/NumeralGigante";
+
+/**
+ * Ritmo vertical. A home antiga tinha um valor só (144/144) em sete de dez blocos, e era
+ * parte do que fazia a página parecer a mesma seção repetida. Aqui são sete medidas, e cada
+ * seção escolhe a sua. Origem: docs/exploracao-visual/b-editorial.html.
+ */
+const RITMOS = {
+  hero: "pt-16 pb-0 md:pt-20 lg:pt-[5.5rem]",
+  amplo: "py-20 lg:pt-40 lg:pb-28",
+  medio: "py-20 lg:py-36",
+  compacto: "py-20 lg:py-32",
+  alto: "py-20 lg:py-40",
+  semTopo: "pt-0 pb-20 lg:pb-32",
+} as const;
+
+export type Ritmo = keyof typeof RITMOS;
 
 type Props = {
   id: string;
-  campo: "papel" | "tinta";
-  pergunta: string;
+  campo: "tinta" | "papel" | "azul";
+  ritmo: Ritmo;
+  /** Numeral em serifa cortado pela borda de cima. Decorativo. */
+  numeral?: number;
+  numeralCentro?: boolean;
   separador?: boolean;
+  /** Deixa o conteúdo transbordar: só o hero precisa, para o cartão descer na seção seguinte. */
+  transbordar?: boolean;
   fundo?: ReactNode;
-  extra?: ReactNode;
+  className?: string;
   children: ReactNode;
 };
 
-export function Secao({ id, campo, pergunta, separador = false, fundo, extra, children }: Props) {
-  const escuro = campo === "tinta";
-  const fio = escuro ? "border-fio-escuro" : "border-fio-claro";
-  const corConector = escuro ? "text-branco" : "text-azul";
+/**
+ * Casca de seção: campo, ritmo vertical, numeral e fundo. Nada mais.
+ *
+ * Deliberadamente NÃO monta cabeçalho nem moldura. A versão anterior montava rótulo, título e
+ * abertura sempre no mesmo lugar, e o resultado foi oito de nove seções com o mesmo esqueleto —
+ * o "quadradão" que ele reprovou. Quem quer o cabeçalho padrão usa `CabecaSecao`; quem precisa
+ * de outro arranjo (hero, virada, perguntas, CTA) escreve o seu.
+ *
+ * O container é do filho, não daqui: seções com sangria, folha ou laje precisam decidir o que
+ * fica dentro da medida e o que atravessa.
+ */
+export function Secao({
+  id,
+  campo,
+  ritmo,
+  numeral,
+  numeralCentro = false,
+  separador = false,
+  transbordar = false,
+  fundo,
+  className = "",
+  children,
+}: Props) {
+  const escuro = campo !== "papel";
   return (
-    <section id={id} className={`campo-${campo} relative overflow-clip ${separador ? `border-t ${fio}` : ""}`}>
+    <section
+      id={id}
+      className={`campo-${campo} relative ${transbordar ? "overflow-visible" : "overflow-clip"} ${
+        RITMOS[ritmo]
+      } ${separador ? (escuro ? "border-t border-fio-escuro" : "border-t border-fio-claro") : ""} ${className}`}
+    >
       {fundo}
-      <Container className="relative py-20 md:py-28 lg:py-36">
-        <div className="grid gap-y-6 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-0">
-          <div className="lg:col-span-6 lg:sticky lg:top-28 lg:self-start">
-            <div className="lg:grid lg:grid-cols-6 lg:gap-x-6">
-              <h2 className="t-sub max-w-[22ch] lg:col-span-5">{pergunta}</h2>
-              <div className={`mt-6 lg:mt-0 ${corConector}`}>
-                <Conector tamanho="pequeno" className="h-16 w-12 lg:hidden" />
-                <Conector tamanho="grande" className="hidden h-auto w-full lg:block" />
-              </div>
-            </div>
-          </div>
-          <div className="lg:col-span-6">{children}</div>
-        </div>
-        {extra ? <div className="mt-16 lg:mt-24">{extra}</div> : null}
-      </Container>
+      {numeral ? <NumeralGigante numero={numeral} centro={numeralCentro} /> : null}
+      {children}
     </section>
   );
 }

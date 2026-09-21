@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Lemis — três direções para a home</title>
+<link rel="stylesheet" href="base.css">
+<style>
+  body { padding: 0; }
+  .faixa { width: 2400px; padding: 56px 64px 64px; background: var(--tinta); color: var(--branco); }
+  .faixa + .faixa { border-top: 1px solid var(--fio-escuro); }
+  .faixa h1 { font-size: 40px; font-weight: 900; letter-spacing: -.03em; }
+  .faixa .sub { margin-top: 8px; color: var(--secundario-escuro); font-size: 18px; }
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 40px; }
+  .dir h2 { font-size: 26px; font-weight: 900; letter-spacing: -.02em; }
+  .dir h2 em { font-family: var(--font-destaque); font-style: italic; font-weight: 400; color: var(--azul); }
+  .dir .tese { margin-top: 8px; color: var(--secundario-escuro); font-size: 16px; line-height: 1.45; min-height: 70px; }
+  .dir .linha { display: grid; grid-template-columns: 1fr 190px; gap: 16px; margin-top: 20px; align-items: start; }
+  .dir img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--fio-escuro); }
+  .dir .inteira { margin-top: 16px; height: 1100px; overflow: hidden; border-radius: 12px; border: 1px solid var(--fio-escuro); background: var(--tinta-funda); }
+  .dir .inteira img { border: 0; border-radius: 0; }
+  .legenda { margin-top: 8px; font-size: 13px; color: var(--secundario-escuro); }
+  .cinco { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; margin-top: 32px; }
+  .cinco figure { margin: 0; }
+  .cinco img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--fio-escuro); }
+  .cinco figcaption { margin-top: 10px; font-size: 14px; color: var(--secundario-escuro); }
+  .cinco figcaption b { color: var(--branco); font-weight: 600; }
+</style>
+</head>
+<body class="campo-tinta">
+
+<section class="faixa">
+  <h1>Três direções para a home da Lemis</h1>
+  <p class="sub">Mesma copy, mesma marca, três estruturas. Dobra em 1440 px, dobra em 390 px e a página inteira de cada uma.</p>
+  <div class="tres">
+    <div class="dir">
+      <h2>A · <em>Trilho</em></h2>
+      <p class="tese">Uma linha azul contínua (o gesto do "l") desce pela página inteira e o conteúdo pendura nela alternando lados. Sem moldura: as interfaces desenhadas ficam soltas no campo.</p>
+      <div class="linha"><img src="capturas/a-dobra-desktop.png" alt=""><img src="capturas/a-dobra-mobile.png" alt=""></div>
+      <div class="inteira"><img src="capturas/a-desktop.png" alt=""></div>
+      <p class="legenda">Página inteira em 1440 px (recorte do topo).</p>
+    </div>
+    <div class="dir">
+      <h2>B · <em>Editorial</em></h2>
+      <p class="tese">Contraste de escala e assimetria no lugar de superfície: numerais de 200 px cortados pela borda, larguras que variam por seção, folha de papel deslocada, interfaces em camadas.</p>
+      <div class="linha"><img src="capturas/b-dobra-desktop.png" alt=""><img src="capturas/b-dobra-mobile.png" alt=""></div>
+      <div class="inteira"><img src="capturas/b-desktop.png" alt=""></div>
+      <p class="legenda">Página inteira em 1440 px (recorte do topo).</p>
+    </div>
+    <div class="dir">
+      <h2>C · <em>Palco</em></h2>
+      <p class="tese">O funil desenhado é o protagonista: um painel fixo troca de cena enquanto o texto rola ao lado. Uma caixa só na primeira metade da página. No celular, o painel prende na base da tela.</p>
+      <div class="linha"><img src="capturas/c-dobra-desktop.png" alt=""><img src="capturas/c-dobra-mobile.png" alt=""></div>
+      <div class="inteira"><img src="capturas/c-desktop.png" alt=""></div>
+      <p class="legenda">Página inteira em 1440 px (recorte do topo). Os seis estados do painel estão em capturas/c-estado-1.png a c-estado-6.png.</p>
+    </div>
+  </div>
+</section>
+
+<section class="faixa">
+  <h1>Mesmo estúdio?</h1>
+  <p class="sub">A home de hoje, as três direções e a página 03 da apresentação Botolifting v2 (aprovada), lado a lado.</p>
+  <div class="cinco">
+    <figure><img src="capturas/atual-dobra-desktop.png" alt=""><figcaption><b>Home atual</b> · preview v2</figcaption></figure>
+    <figure><img src="capturas/a-dobra-desktop.png" alt=""><figcaption><b>A · Trilho</b></figcaption></figure>
+    <figure><img src="capturas/b-dobra-desktop.png" alt=""><figcaption><b>B · Editorial</b></figcaption></figure>
+    <figure><img src="capturas/c-dobra-desktop.png" alt=""><figcaption><b>C · Palco</b></figcaption></figure>
+    <figure><img src="capturas/referencia-botolifting-03.png" alt=""><figcaption><b>Botolifting v2</b> · página 03, aprovada</figcaption></figure>
+  </div>
+</section>
+
+</body>
+</html>

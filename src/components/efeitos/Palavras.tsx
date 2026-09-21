@@ -4,14 +4,14 @@ import { Fragment } from "react";
 import { m } from "motion/react";
 import { EASE_LEMIS } from "@/components/efeitos/Revelar";
 
-type Props = { texto: string; className?: string; atraso?: number };
+type Props = { texto: string; className?: string; atraso?: number; semSrOnly?: boolean };
 
 /** Palavra a palavra em view. A redução de movimento é feita pelo MotionConfig (transform instantâneo). */
-export function Palavras({ texto, className, atraso = 0 }: Props) {
+export function Palavras({ texto, className, atraso = 0, semSrOnly = false }: Props) {
   const palavras = texto.split(" ");
   return (
     <span className={className}>
-      <span className="sr-only">{texto}</span>
+      {semSrOnly ? null : <span className="sr-only">{texto}</span>}
       <span aria-hidden="true">
         {palavras.map((palavra, i) => (
           <Fragment key={`${palavra}-${i}`}>

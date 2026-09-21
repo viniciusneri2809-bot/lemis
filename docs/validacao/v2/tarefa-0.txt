@@ -1,0 +1,3 @@
+Tarefa 0 — fonte de destaque
+tamanho: 15684 bytes
+6ee678c33f388dd7ba59700ebea635deb98821baafd817b09891f7927177f702  src/app/fonts/InstrumentSerif-Italic.woff2

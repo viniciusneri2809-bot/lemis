@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lemis — Cliente novo entrando, cliente antigo voltando</title>
+<link rel="stylesheet" href="base.css">
+<style>
+
+
+.cena-chega .fecho-cena, .esquema .fecho-cena { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--fio-escuro); }
+.cena-volta .campos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; padding-top: 16px; border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+.cena-volta .campos dd { margin-top: 8px; }
+.esquema { display: flex; flex-direction: column; gap: 16px; }
+.esquema .bolha.enviada { width: 86%; }
+.esquema .campo { display: grid; gap: 8px; }
+.esquema .chip { align-self: flex-start; }
+.painel-acomp { padding: 24px; }
+.painel-acomp .topo { display: flex; align-items: center; gap: 8px; }
+.painel-acomp .topo .chip { margin-left: auto; }
+.painel-acomp .ponto-azul { width: 8px; height: 8px; border-radius: 50%; background: var(--azul); }
+.painel-acomp .indicadores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--fio-claro); }
+.painel-acomp .indicadores dd { margin-top: 12px; }
+.painel-acomp .origens { display: grid; gap: 16px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--fio-claro); }
+.painel-acomp .origens > div { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 16px; }
+.superficie-escura.painel-acomp { color: var(--branco); }
+.superficie-escura.painel-acomp .indicadores, .superficie-escura.painel-acomp .origens { border-color: var(--fio-escuro); }
+.conversa-acomp .ladrilho-simbolo { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--azul); color: var(--branco); }
+.conversa-acomp .ladrilho-simbolo svg { width: 20px; height: 20px; }
+.conversa-acomp p { margin-top: 20px; }
+
+/* utilidades */
+.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}.mt32{margin-top:32px}.mt64{margin-top:64px}
+.max38{max-width:38ch}.max39{max-width:39ch}.max40{max-width:40ch}.max46{max-width:46ch}.max52{max-width:52ch}
+.acoes{display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px;margin-top:40px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.separador{border-top:1px solid var(--fio-escuro)}
+
+/* o campo: dois tons de tinta para o trilho ter fundo */
+main{position:relative}
+section{position:relative;overflow:clip;padding-block:var(--pad,128px)}
+.campo-tinta{background:linear-gradient(180deg,var(--tinta) 0%,var(--tinta-funda) 100%)}
+.campo-tinta + .campo-tinta{background:linear-gradient(180deg,var(--tinta-funda) 0%,var(--tinta) 45%,var(--tinta-funda) 100%)}
+#inicio{--pad:96px;padding-bottom:0}
+#duas-portas{--pad:112px}
+#como-funciona{--pad:144px}
+#aquisicao{--pad:112px}
+#retencao{--pad:128px}
+#acompanhamento{--pad:112px}
+#como-comeca{--pad:104px}
+#perguntas{--pad:112px}
+#contato{--pad:144px}
+
+/* grade de 12 e os dois lados do trilho */
+.g12{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;row-gap:0;position:relative}
+.col12{grid-column:1/-1}
+.esq{grid-column:1/7;padding-right:56px}
+.dir{grid-column:7/-1;padding-left:56px}
+.fim{align-self:end}
+
+/* o trilho */
+.trilho{position:absolute;top:0;bottom:0;left:50%;margin-left:-1px;z-index:0}
+.trilho::after{filter:drop-shadow(0 0 8px var(--azul))}
+.no-trilho{position:absolute;left:50%;top:6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;border:2px solid var(--azul);background:var(--tinta);z-index:1}
+.campo-papel .no-trilho{background:var(--papel)}
+.g12 > *{position:relative;z-index:1}
+
+/* hero */
+.hero h1{max-width:14ch;margin-top:24px}
+.hero .esq{margin-top:32px}
+.funil{position:relative;margin-top:64px;padding-bottom:120px;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:84px;align-items:center}
+.funil .trilho{top:36px}
+.funil .rot{grid-row:1;align-self:end;padding-bottom:12px}
+.funil .rot-aq{grid-column:1;justify-self:end;padding-right:64px}
+.funil .rot-re{grid-column:2;grid-row:4;padding-left:64px}
+.funil ol{display:contents}
+.funil li{position:relative;display:flex;align-items:center}
+.funil .aq li{grid-column:1;justify-content:flex-end;padding-right:64px}
+.funil .re li{grid-column:2;padding-left:64px}
+.funil .aq .n1{grid-row:2}.funil .aq .n2{grid-row:3}.funil .aq .n3{grid-row:4}.funil .aq .n4{grid-row:5}
+.funil .re .n1{grid-row:5}.funil .re .n2{grid-row:6}.funil .re .n3{grid-row:7}
+.funil li::after{content:"";position:absolute;top:50%;height:1px;width:64px;background:var(--fio-escuro)}
+.funil .aq li::after{right:0}
+.funil .re li::after{left:0}
+.funil .vira::after,.funil .recebe::after{height:2px;margin-top:-1px;background:var(--cor-feixe)}
+.funil .cliente{grid-column:1;grid-row:6/8;justify-self:end;margin-right:-56px;max-width:240px;z-index:2;box-shadow:0 18px 40px -18px #000}
+/* o "l": a linha horizontal que sai de Fechou e chega em Cliente novo, animada */
+.funil .vira::before,.funil .recebe::before{content:"";position:absolute;top:50%;height:2px;width:64px;margin-top:-1px;background:var(--azul);filter:drop-shadow(0 0 6px var(--azul));opacity:0}
+.funil .vira::before{right:0}.funil .recebe::before{left:0}
+@media (prefers-reduced-motion:no-preference){
+  .funil .vira::before{animation:vira 3.2s linear infinite;animation-delay:2.4s}
+  .funil .recebe::before{animation:vira 3.2s linear infinite;animation-delay:2.8s}
+  @keyframes vira{0%,20%{opacity:0}30%,60%{opacity:1}70%,100%{opacity:0}}
+}
+@media (prefers-reduced-motion:reduce){.funil .vira::after,.funil .recebe::after{background:color-mix(in srgb,var(--azul) 70%,transparent)}}
+
+/* cenas soltas: sem moldura, um halo atrás */
+.halo{position:relative}
+.halo::before{content:"";position:absolute;inset:-32px;border-radius:32px;background:radial-gradient(closest-side,color-mix(in srgb,var(--azul) 14%,transparent),transparent 75%);pointer-events:none}
+.halo > *{position:relative}
+.cena-volta.cartao-cliente.tinta{border-color:transparent;background:color-mix(in srgb,var(--branco) 4%,transparent);box-shadow:0 30px 60px -30px #000}
+.cenas{display:grid;grid-template-columns:1fr 1fr;margin-top:64px}
+.cenas .cena.esq{padding-right:72px}
+.cenas .cena.dir{padding-left:72px;margin-top:96px}
+.cena-chega{max-width:440px}
+#duas-portas .fecho{margin-top:64px;max-width:40ch}
+
+/* virada */
+.virada h2{max-width:16ch}
+.virada .dir{margin-top:32px}
+.corpo-virada{position:relative;margin-top:80px;padding-bottom:var(--pad);margin-bottom:calc(-1 * var(--pad))}
+.corpo-virada .trilho{top:0}
+.corpo-virada::before{content:"";position:absolute;left:50%;top:0;width:12px;height:12px;margin-left:-6px;border-radius:50%;border:2px solid var(--azul);background:var(--tinta);z-index:1}
+.contraste{display:grid;grid-template-columns:1fr 1fr;margin-top:24px}
+.contraste .lado-esq{text-align:right;padding-right:56px;max-width:none;justify-self:end;max-width:24ch}
+.contraste .lado-dir{padding-left:56px;max-width:26ch}
+.fund{display:grid;grid-template-columns:1fr 1fr;row-gap:40px;margin-top:88px}
+.fund .item:nth-child(1){grid-row:1}.fund .item:nth-child(2){grid-row:2}.fund .item:nth-child(3){grid-row:3}
+.item{display:flex;align-items:flex-start;gap:28px}
+.item.esq{grid-column:1;flex-direction:row-reverse;text-align:right;padding-right:0}
+.item.esq p,.item.esq h3{margin-left:auto}
+.item.dir{grid-column:2;padding-left:0}
+.numeral{line-height:.9;flex:none;display:block}
+.n64{font-size:64px}
+.n96{font-size:96px}
+.item .numeral{width:72px}
+.item.esq .numeral{text-align:right;margin-right:-8px}
+.item.dir .numeral{text-align:left;margin-left:-8px}
+
+/* aquisição */
+.escada{display:grid;grid-template-columns:1fr 1fr;row-gap:56px;margin-top:88px}
+.escada .item{align-items:flex-start}
+.escada .corpo{width:min(100%,380px)}
+.escada .item.esq .corpo{text-align:left}
+.escada .item.esq{justify-content:flex-start}
+.escada .item.dir:nth-child(4) .halo{margin-left:-136px}
+.escada .item.dir:nth-child(4) .numeral{position:relative;z-index:2}
+.escada .esquema{max-width:360px}
+.escada .item:nth-child(2){margin-top:80px}
+.escada .item:nth-child(3){margin-top:-40px}
+.escada .item:nth-child(4){margin-top:96px}
+.esquema-fechou-wrap{max-width:320px}
+
+/* retenção */
+.centro{display:grid;grid-template-columns:3fr 6fr 3fr;column-gap:24px;align-items:center;margin-top:96px}
+.centro .apoio{max-width:30ch;text-align:right;padding-right:32px}
+.centro .fecho-ret{max-width:30ch;padding-left:32px}
+.pilha{position:relative;justify-self:center;width:min(100%,420px)}
+.pilha .principal{position:relative;z-index:2}
+.fantasma{position:absolute;inset:0;background:var(--superficie-escura);border:1px solid var(--fio-escuro);border-radius:16px}
+.fantasma.f1{transform:translate(-16px,-16px) scale(.97);opacity:.8}
+.fantasma.f2{transform:translate(-32px,-32px) scale(.94);opacity:.6}
+
+/* acompanhamento */
+.painel-acomp.solto{background:none;border:0;box-shadow:none;padding:0}
+.painel-acomp.solto .indicadores dd .barra{height:14px}
+.painel-acomp.solto .origens .barra{height:14px}
+
+/* como começa */
+.passos{display:grid;grid-template-columns:1fr 1fr;row-gap:40px;margin-top:88px}
+.passos .item:nth-child(1){grid-row:1}.passos .item:nth-child(2){grid-row:2}.passos .item:nth-child(3){grid-row:3}
+#como-comeca .acoes{margin-top:72px}
+
+/* perguntas */
+.fixo{position:sticky;top:112px;align-self:start;max-width:16ch}
+
+/* cta */
+.cta{--cor-feixe:color-mix(in srgb,var(--branco) 30%,transparent)}
+.cta .trilho{bottom:auto;height:calc(100% - 420px)}
+.cta .trilho::after{background:var(--branco);filter:drop-shadow(0 0 8px var(--branco))}
+.cta .motivo{position:absolute;bottom:0;left:calc(50% - 56px);width:900px;color:var(--papel);pointer-events:none}
+.cta .motivo svg{width:100%;height:auto}
+.cta h2{max-width:34rem}
+.cta .container{min-height:520px}
+
+/* celular: trilho na margem, tudo à direita dele */
+@media (max-width:1023px){
+  section{--pad:80px!important}
+  #inicio{padding-bottom:0!important}
+  .g12{display:block;padding-left:44px}
+  .esq,.dir,.col12{padding-left:0;padding-right:0}
+  .g12 > * + .dir,.g12 > * + .esq{margin-top:24px}
+  .trilho,.no-trilho{left:20px}
+  .no-trilho{margin-left:-6px}
+  .hero h1{max-width:none}
+  .funil{display:grid;grid-template-columns:1fr;grid-auto-rows:auto;row-gap:14px;margin-top:56px;padding-bottom:88px;padding-left:0}
+  .funil .trilho{left:-24px;top:8px}
+  .funil ol{display:contents}
+  .funil li,.funil .aq li,.funil .re li{grid-column:1;grid-row:auto;justify-content:flex-start;padding:0}
+  .funil .rot,.funil .rot-aq,.funil .rot-re{grid-column:1;grid-row:auto;justify-self:start;padding:0;margin-top:20px}
+  .funil li::after{left:-24px;width:24px}
+  .funil .vira::before,.funil .recebe::before{display:none}
+  .funil .cliente{grid-column:1;grid-row:auto;justify-self:start;margin:6px 0 10px;max-width:260px}
+  .cenas{display:block;margin-top:48px}
+  .cenas .cena.esq,.cenas .cena.dir{padding:0;margin-top:0}
+  .cenas .cena.dir{margin-top:48px}
+  #duas-portas .fecho{margin-top:48px}
+  .virada h2{max-width:none}
+  .contraste{display:grid;grid-template-columns:1fr;row-gap:24px;margin-top:56px}
+  .contraste .lado-esq{text-align:left;padding:0;justify-self:start}
+  .contraste .lado-dir{padding:0 0 0 24px;border-left:1px solid var(--fio-escuro)}
+  .fund,.escada,.passos{display:grid;grid-template-columns:1fr;row-gap:40px;margin-top:56px}
+  .fund .item,.passos .item{grid-row:auto!important}
+  .corpo-virada{margin-top:48px}
+  .corpo-virada .trilho,.corpo-virada::before{left:20px}
+  .item,.item.esq,.item.dir{flex-direction:row;text-align:left;grid-column:1;margin-top:0!important}
+  .item.esq p,.item.esq h3{margin-left:0}
+  .item .numeral,.item.esq .numeral,.item.dir .numeral{margin:0;width:56px;text-align:left}
+  .n64{font-size:48px}.n96{font-size:64px}
+  .escada .item.dir:nth-child(4) .halo{margin-left:0}
+  .centro{display:grid;grid-template-columns:1fr;row-gap:32px;margin-top:56px}
+  .centro .apoio,.centro .fecho-ret{text-align:left;padding:0;max-width:44ch}
+  .pilha{justify-self:start;width:100%}
+  .fixo{position:static;max-width:none;margin-bottom:32px}
+  .cta .trilho{height:calc(100% - 220px)}
+  .cta .motivo{width:110vw;left:calc(20px - 6.9vw)}
+  .cta .container{min-height:0;padding-bottom:200px}
+}
+
+</style>
+</head>
+<body class="campo-tinta">
+<svg style="display:none" aria-hidden="true">
+<symbol id="wordmark" viewBox="0 0 368 106"><g fill="currentColor" fill-rule="evenodd"><path d="M4 4H22V75Q22 83 30 83H42V100H28Q4 100 4 76Z"/><path d="M119 70H66C68 81 75 86 86 86C94 86 101 83 107 78L117 89C109 98 98 102 85 102C61 102 47 86 47 64C47 41 62 26 83 26C106 26 119 42 119 64ZM66 57H101C99 47 93 42 83 42C74 42 68 47 66 57Z"/><path d="M132 28H149V37C154 30 161 26 170 26C181 26 190 31 194 39C200 30 208 26 220 26C239 26 249 39 249 59V100H231V61C231 49 227 43 218 43C208 43 201 50 201 62V100H183V61C183 49 179 43 170 43C159 43 150 51 150 64V100H132Z"/><path d="M266 28H284V100H266ZM266 4H284V19H266Z"/><path d="M362 36L353 49C345 44 338 41 330 41C322 41 317 44 317 49C317 54 322 56 334 59C353 63 364 68 364 81C364 95 351 102 331 102C317 102 305 98 295 90L305 77C313 84 322 87 331 87C341 87 346 85 346 80C346 75 340 73 329 71C311 67 299 62 299 49C299 35 311 26 330 26C342 26 353 30 362 36Z"/></g></symbol>
+<symbol id="simbolo" viewBox="0 0 64 64"><path fill="currentColor" d="M8 6H24V36Q24 42 30 42H56V58H28Q8 58 8 38Z"/></symbol>
+<symbol id="motivo" viewBox="0 0 640 320" fill="none"><path d="M40 0v180q0 60 60 60h220q60 0 60-60V60q0-40 40-40h220" stroke="currentColor" stroke-width="24"/></symbol>
+<symbol id="motivo-alto" viewBox="0 0 640 1000" fill="none"><path d="M40 0V860q0 60 60 60h220q60 0 60-60V740q0-40 40-40h220" stroke="currentColor" stroke-width="24"/></symbol>
+<symbol id="seta-externa" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M6 4h6v6"/></symbol>
+<symbol id="seta-baixo" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M4 9l4 4 4-4"/></symbol>
+<symbol id="seta-direita" viewBox="0 0 64 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M0 6h56M50 1l6 5-6 5"/></symbol>
+<symbol id="i-aquisicao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16l-6 7v6l-4 2v-8Z"/><path d="M7 8h10"/></symbol><symbol id="i-atendimento" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3V9h2m14 8h2V9h-2M5 13V9a7 7 0 0 1 14 0v8c0 3-3 4-6 4"/><path d="M10 21h3"/></symbol><symbol id="i-conexao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4v8a5 5 0 0 0 5 5h8a5 5 0 0 0 5-5V4"/><path d="M12 17v4"/><circle cx="3" cy="3" r="1.5"/><circle cx="21" cy="3" r="1.5"/></symbol><symbol id="i-criacao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 16 5l3 3L7 20H4Z"/><path d="m13 8 3 3M13 20h7"/></symbol><symbol id="i-inteligencia" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v11a5 5 0 0 0 5 5h11M4 12h11a5 5 0 0 0 5-5V4"/><circle cx="4" cy="3" r="1.5"/><circle cx="21" cy="20" r="1.5"/><circle cx="20" cy="3" r="1.5"/></symbol><symbol id="i-vendas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16l-3-2-4 2-4-2-3 2Z"/><path d="m8 11 3 3 5-6"/></symbol>
+</svg>
+
+<header class="header">
+  <div class="barra-nav">
+    <a class="wordmark" href="#inicio" aria-label="Lemis, início da página"><svg class="" viewBox="0 0 368 106" aria-hidden="true" focusable="false"><use href="#wordmark"/></svg></a>
+    <nav aria-label="Principal"><ul><li><a href="#como-funciona">Como funciona</a></li><li><a href="#aquisicao">Aquisição</a></li><li><a href="#retencao">Retenção</a></li><li><a href="#como-comeca">Como começa</a></li><li><a href="#perguntas">Perguntas</a></li></ul></nav>
+    <a class="botao  " href="https://wa.me/5575988023044?text=Ol%C3%A1%2C%20Lemis.%20Quero%20conversar%20sobre%20implantar%20o%20funil%20de%20aquisi%C3%A7%C3%A3o%20e%20de%20reten%C3%A7%C3%A3o%20na%20minha%20empresa." target="_blank" rel="noopener noreferrer">Vamos conversar<svg class="" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#seta-externa"/></svg><span class="sr-only">(abre em nova aba)</span></a>
+    <button class="menu" type="button" aria-label="Abrir menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
+  </div>
+</header>
+<main id="conteudo">
+
+<!-- 1 · Hero -->
+<section id="inicio" class="campo-tinta hero">
+  <span class="glow" style="width:40rem;height:40rem;top:10%;right:-14rem;opacity:.4" aria-hidden="true"></span>
+  <div class="container g12">
+    <div class="col12"><span class="pilula t-rotulo texto-2 entra-hero">Funil de aquisição e de retenção</span></div>
+    <h1 class="t-display col12 entra-hero" style="--i:2"><span class="sr-only">Cliente novo entrando, cliente antigo voltando.</span><span aria-hidden="true">Cliente novo entrando, cliente antigo <em class="t-destaque">voltando</em>.</span></h1>
+    <div class="esq">
+      <p class="t-lead texto-2 entra-hero" style="--i:6">Implantamos na sua empresa o funil de aquisição e o de retenção: o caminho por onde o cliente novo chega e o cliente antigo compra de novo. Tráfego, estratégia comercial, automação e IA fazem isso rodar. Você conversa com quem cuida.</p>
+      <div class="acoes entra-hero" style="--i:8">
+        <a class="botao  " href="https://wa.me/5575988023044?text=Ol%C3%A1%2C%20Lemis.%20Quero%20conversar%20sobre%20implantar%20o%20funil%20de%20aquisi%C3%A7%C3%A3o%20e%20de%20reten%C3%A7%C3%A3o%20na%20minha%20empresa." target="_blank" rel="noopener noreferrer">Vamos conversar<svg class="" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#seta-externa"/></svg><span class="sr-only">(abre em nova aba)</span></a>
+        <a class="link-seta" href="#como-funciona">Ver como funciona<svg class="" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#seta-baixo"/></svg></a>
+      </div>
+    </div>
+    <div class="funil col12 entra-hero" style="--i:10">
+      <span class="trilho feixe v" style="--atraso:0s" aria-hidden="true"></span>
+      <p class="rot rot-aq t-rotulo texto-2">Aquisição</p>
+      <ol class="aq" aria-label="Etapas do funil de aquisição">
+        <li class="n1 "><span class="no  " ><span class="ladrilho"><svg class="" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-aquisicao"/></svg></span><span class="t-controle">Anúncio</span></span></li><li class="n2 "><span class="no  " ><span class="ladrilho"><svg class="" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-atendimento"/></svg></span><span class="t-controle">Conversa no WhatsApp</span></span></li><li class="n3 "><span class="no  " ><span class="ladrilho"><svg class="" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-conexao"/></svg></span><span class="t-controle">Registrado no CRM</span></span></li><li class="n4 vira"><span class="no  " ><span class="ladrilho"><svg class="" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-vendas"/></svg></span><span class="t-controle">Fechou</span></span></li>
+      </ol>
+      <p class="rot rot-re t-rotulo texto-2">Retenção</p>
+      <ol class="re" aria-label="Etapas do funil de retenção">
+        <li class="n1 recebe"><span class="no  " ><span class="ladrilho"><svg class="" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-atendimento"/></svg></span><span class="t-controle">Cliente novo</span></span></li><li class="n2 "><span class="no  " ><span class="ladrilho"><svg class="" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-inteligencia"/></svg></span><span class="t-controle">Hora de voltar</span></span></li><li class="n3 "><span class="no destino feixe-borda " ><span class="ladrilho"><svg class="" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#i-vendas"/></svg></span><span class="t-controle">Comprou de novo</span></span></li>
+      </ol>
+      <div class="cartao-cliente   cliente" aria-hidden="true" >
+  <div class="topo"><span class="avatar "></span><span><span class="barra forte " style="width:58%"></span><span class="barra  " style="width:34%"></span></span></div>
+  
+  <span class="chip t-legenda azul ">Origem registrada</span>
+</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · As duas portas -->
+<section id="duas-portas" class="campo-tinta pontos">
+  <span class="trilho feixe v" style="--atraso:0.8s" aria-hidden="true"></span>
+  <span class="glow" style="width:28rem;height:28rem;top:0;right:0;opacity:.5" aria-hidden="true"></span>
+  <div class="container g12">
+    <span class="no-trilho" aria-hidden="true"></span>
+    <div class="esq entra"><span class="pilula t-rotulo texto-2">As duas portas</span><h2 class="t-titulo mt24"><span class="sr-only">Seu faturamento entra por duas portas: quem chega e quem volta.</span><span aria-hidden="true">Seu faturamento entra por duas <em class="t-destaque">portas</em>: quem chega e quem volta.</span></h2></div>
+    <p class="dir t-lead texto-2 entra fim">A primeira é o cliente novo. A segunda é o cliente que já comprou. A maior parte do esforço de marketing olha só para a primeira.</p>
+    <div class="cenas col12">
+      
+      <div class="cena esq entra">
+        <p class="t-rotulo texto-2">Quem chega</p>
+        <div class="halo mt20"><div class="cena-chega" aria-hidden="true"><span class="bolha recebida ">Vi o anúncio, quanto fica?<span class="hora">09:12</span></span><span class="bolha enviada "><span class="barra forte " style="width:72%"></span><span class="barra  " style="width:48%"></span><span class="hora">11:48</span></span><div class="fecho-cena"><span class="chip t-legenda  ">Sem próximo passo</span></div></div></div>
+        <p class="t-corpo texto-2 mt24 max46">A mensagem chega no horário de pico. Quem responde está no meio de outra coisa. A resposta sai quando dá, e a conversa esfria. Ninguém anotou de onde veio nem o que falta para fechar.</p>
+      </div>
+      <div class="cena dir entra">
+        <p class="t-rotulo texto-2">Quem volta</p>
+        <div class="halo mt20"><div class="cena-volta cartao-cliente tinta" aria-hidden="true">
+  <div class="topo"><span class="avatar "></span><span><span class="barra forte " style="width:56%"></span><span class="barra  " style="width:32%"></span></span></div>
+  <dl class="campos t-legenda texto-2"><div><dt>Última compra</dt><dd><span class="barra forte " style="width:70%"></span></dd></div><div><dt>Voltar em</dt><dd><span class="barra vazia" style="width:100%"></span></dd></div></dl>
+  <span class="chip t-legenda  ">Sem data de volta</span>
+</div></div>
+        <p class="t-corpo texto-2 mt24 max46">O serviço é entregue e o cliente some do radar. Voltar depende da memória dele, não de um caminho seu.</p>
+      </div>
+    </div>
+    <p class="fecho t-sub entra esq">Nos dois casos falta a mesma coisa: um contato com origem registrada, um próximo passo marcado e uma hora de voltar. É isso que a Lemis monta.</p>
+  </div>
+</section>
+
+<!-- 3 · A virada -->
+<section id="como-funciona" class="campo-tinta grade virada">
+  <span class="glow" style="width:30rem;height:30rem;bottom:-10rem;left:33%;opacity:.4" aria-hidden="true"></span>
+  <div class="container g12">
+    <div class="col12 entra"><span class="pilula t-rotulo texto-2">O que a Lemis implanta</span></div>
+    <h2 class="t-display col12 entra mt24"><span class="sr-only">Um caminho fixo por onde o cliente novo entra e o cliente antigo volta.</span><span aria-hidden="true">Um caminho fixo por onde o cliente novo entra e o cliente antigo <em class="t-destaque">volta</em>.</span></h2>
+    <p class="dir t-lead texto-2 entra">Quem chama tem próximo passo registrado. Quem já comprou tem hora de voltar. O caminho existe dentro da sua empresa e continua rodando com o seu time, em vez de depender de quem estava livre naquele dia.</p>
+  </div>
+  <div class="corpo-virada">
+  <span class="trilho feixe v" style="--atraso:1.6s" aria-hidden="true"></span>
+  <div class="container g12">
+    <div class="contraste col12 entra">
+      <p class="t-sub texto-2 lado-esq">Agência de tráfego entrega o contato.</p>
+      <p class="t-sub lado-dir">A Lemis implanta o caminho que o contato percorre, da primeira mensagem à compra seguinte.</p>
+    </div>
+    <ul class="fund col12">
+      
+      <li class="item esq entra">
+        <span class="numeral t-destaque n64" aria-hidden="true">01</span>
+        <div><h3 class="t-sub">Proximidade</h3><p class="t-corpo texto-2 mt12 max38">Você conversa com quem cuida do funil. Sem intermediário entre a decisão e a execução.</p></div>
+      </li>
+      <li class="item dir entra">
+        <span class="numeral t-destaque n64" aria-hidden="true">02</span>
+        <div><h3 class="t-sub">Visão comercial</h3><p class="t-corpo texto-2 mt12 max38">Acompanhamos o que acontece depois do primeiro contato e depois da primeira compra.</p></div>
+      </li>
+      <li class="item esq entra">
+        <span class="numeral t-destaque n64" aria-hidden="true">03</span>
+        <div><h3 class="t-sub">Execução integrada</h3><p class="t-corpo texto-2 mt12 max38">Anúncio, atendimento e CRM montados em função uns dos outros, com automação e IA onde fazem o caminho andar.</p></div>
+      </li>
+    </ul>
+  </div>
+  </div>
+</section>
+
+<!-- 4 · Aquisição -->
+<section id="aquisicao" class="campo-tinta">
+  <span class="trilho feixe v" style="--atraso:2.4s" aria-hidden="true"></span>
+  <div class="container g12">
+    <span class="no-trilho" aria-hidden="true"></span>
+    <div class="esq entra"><span class="pilula t-rotulo texto-2">Funil de aquisição</span><h2 class="t-titulo mt24"><span class="sr-only">Do anúncio ao fechamento.</span><span aria-hidden="true">Do anúncio ao <em class="t-destaque">fechamento</em>.</span></h2></div>
+    <div class="dir entra fim">
+      <p class="t-lead texto-2">O anúncio traz a mensagem. O caminho faz ela virar cliente. Alinhamos com o seu time como cada contato é respondido a partir do que o anúncio prometeu, e o CRM guarda a origem e o próximo passo.</p>
+      <ul class="chips mt24"><li><span class="chip t-legenda  ">Tráfego pago</span></li><li><span class="chip t-legenda  ">Criativos</span></li><li><span class="chip t-legenda  ">Página</span></li><li><span class="chip t-legenda  ">CRM</span></li><li><span class="chip t-legenda  ">Automação</span></li><li><span class="chip t-legenda  ">IA</span></li></ul>
+      <p class="t-legenda texto-2 mt12">O escopo de cada frente é definido em proposta.</p>
+    </div>
+    <ol class="escada col12">
+      
+      <li class="item esq entra">
+        <span class="numeral t-destaque n64" aria-hidden="true">01</span>
+        <div class="corpo">
+          <h3 class="t-rotulo texto-2">Anúncio</h3>
+          <div class="halo mt16"><div class="esquema esquema-anuncio" aria-hidden="true"><span class="quadro " style="height:88px"></span><div class="campo"><span class="t-rotulo texto-2">Oferta</span><span class="barra forte " style="width:74%"></span></div><div class="campo"><span class="t-rotulo texto-2">Cidade</span><span class="barra forte " style="width:74%"></span></div><span class="chip t-legenda azul ">Fale no WhatsApp</span></div></div>
+        </div>
+      </li>
+      <li class="item dir entra">
+        <span class="numeral t-destaque n64" aria-hidden="true">02</span>
+        <div class="corpo">
+          <h3 class="t-rotulo texto-2">Conversa registrada</h3>
+          <div class="halo mt16"><div class="esquema esquema-conversa" aria-hidden="true"><span class="bolha recebida ">Vi o anúncio, quanto fica?</span><span class="bolha enviada "><span class="barra forte " style="width:72%"></span><span class="barra  " style="width:48%"></span></span><div class="fecho-cena"><span class="chip t-legenda azul ">Origem registrada</span></div></div></div>
+        </div>
+      </li>
+      <li class="item esq entra">
+        <span class="numeral t-destaque n64" aria-hidden="true">03</span>
+        <div class="corpo">
+          <h3 class="t-rotulo texto-2">Próximo passo marcado</h3>
+          <div class="halo mt16"><div class="esquema esquema-crm" aria-hidden="true"><span class="chip t-legenda azul ">Em negociação</span><div class="campo"><span class="t-rotulo texto-2">Origem</span><span class="barra forte " style="width:60%"></span></div><div class="campo"><span class="t-rotulo texto-2">Responsável</span><span class="barra forte " style="width:60%"></span></div></div></div>
+        </div>
+      </li>
+      <li class="item dir entra">
+        <span class="numeral t-destaque n64" aria-hidden="true">04</span>
+        <div class="corpo">
+          <h3 class="t-rotulo texto-2">Fechou</h3>
+          <div class="halo mt16"><div class="cartao-cliente   " aria-hidden="true" >
+  <div class="topo"><span class="avatar "></span><span><span class="barra forte " style="width:58%"></span><span class="barra  " style="width:34%"></span></span></div>
+  
+  <span class="chip t-legenda azul ">Virou cliente</span>
+</div></div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 5 · Retenção -->
+<section id="retencao" class="campo-tinta">
+  <span class="trilho feixe v" style="--atraso:3.2s" aria-hidden="true"></span>
+  <span class="glow" style="width:36rem;height:36rem;top:30%;left:50%;transform:translateX(-50%);opacity:.5" aria-hidden="true"></span>
+  <div class="container g12">
+    <span class="no-trilho" aria-hidden="true"></span>
+    <div class="esq entra"><span class="pilula t-rotulo texto-2">Funil de retenção</span><h2 class="t-titulo mt24"><span class="sr-only">Quem já comprou, compra de novo.</span><span aria-hidden="true">Quem já comprou, compra <em class="t-destaque">de novo</em>.</span></h2></div>
+    <p class="dir t-lead texto-2 entra fim">Retenção é fazer os clientes que já compraram comprar novamente. Quem já comprou não some do radar: tem hora de voltar, e o caminho de volta está pronto quando chega a hora.</p>
+    <div class="centro col12">
+      <p class="t-corpo texto-2 apoio entra">O mesmo cuidado da entrada, aplicado a quem já é seu cliente. É a parte do faturamento que a maioria deixa ao acaso.</p>
+      <div class="pilha entra">
+        <span class="fantasma f2" aria-hidden="true"></span><span class="fantasma f1" aria-hidden="true"></span>
+        <div class="cartao-cliente  grande principal" aria-hidden="true" >
+  <div class="topo"><span class="avatar "></span><span><span class="barra forte " style="width:58%"></span><span class="barra  " style="width:34%"></span></span></div>
+  <ol class="estados"><li>Cliente novo</li><li>Hora de voltar</li><li>Comprou de novo</li></ol>
+  
+</div>
+      </div>
+      <p class="t-corpo fecho-ret entra">O mesmo contato que entrou pelo anúncio fica no CRM com a data da última compra e a próxima hora de voltar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · O que você vê -->
+<section id="acompanhamento" class="campo-papel">
+  <span class="trilho feixe v" style="--atraso:0s" aria-hidden="true"></span>
+  <div class="container g12">
+    <span class="no-trilho" aria-hidden="true"></span>
+    <div class="esq entra"><span class="pilula t-rotulo texto-2">Acompanhamento</span><h2 class="t-titulo mt24"><span class="sr-only">Você enxerga se está funcionando.</span><span aria-hidden="true">Você enxerga se está <em class="t-destaque">funcionando</em>.</span></h2></div>
+    <p class="dir t-lead texto-2 entra fim">Painel em tempo real com o que entrou, o que avançou e o que voltou. E conversa periódica com quem cuida do funil, para decidir o próximo ajuste.</p>
+    <div class="esq entra mt64"><div class="painel-acomp solto superficie-clara" aria-hidden="true">
+  <div class="topo"><span class="ponto-azul"></span><span class="barra  " style="width:7rem"></span><span class="chip t-legenda azul ">Atualizado em tempo real</span></div>
+  <dl class="indicadores"><div><dt class="t-rotulo texto-2">Entraram</dt><dd><span class="barra forte " style="width:88%"></span></dd></div><div><dt class="t-rotulo texto-2">Avançaram</dt><dd><span class="barra forte " style="width:62%"></span></dd></div><div><dt class="t-rotulo texto-2">Voltaram</dt><dd><span class="barra forte " style="width:40%"></span></dd></div></dl>
+  <div class="origens"><div><span class="t-legenda texto-2">Meta Ads</span><span class="barra forte " style="width:82%"></span></div><div><span class="t-legenda texto-2">Google Ads</span><span class="barra forte " style="width:56%"></span></div></div>
+</div></div>
+    <div class="dir entra mt64">
+      <p class="t-rotulo texto-2">Como soa uma conversa de acompanhamento</p>
+      <div class="mt16"><div class="conversa-acomp">
+  <span class="ladrilho-simbolo" aria-hidden="true"><svg class="" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><use href="#simbolo"/></svg></span>
+  <p class="t-sub">“Vamos comparar os contatos recebidos com as conversas que avançaram, e os clientes novos com os que voltaram. A partir disso, revisamos a campanha e o próximo passo do funil.”</p>
+</div></div>
+      <p class="t-legenda texto-2 mt16 max52">Modelo de conversa. Nos acompanhamentos reais entram dados verificados, período e decisão proposta.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Como começa -->
+<section id="como-comeca" class="campo-papel separador">
+  <span class="trilho feixe v" style="--atraso:0.8s" aria-hidden="true"></span>
+  <div class="container g12">
+    <span class="no-trilho" aria-hidden="true"></span>
+    <div class="esq entra"><span class="pilula t-rotulo texto-2">Como começa</span><h2 class="t-titulo mt24"><span class="sr-only">Você chama. Nós ouvimos antes de propor.</span><span aria-hidden="true">Você chama. Nós ouvimos antes de <em class="t-destaque">propor</em>.</span></h2></div>
+    <p class="dir t-lead texto-2 entra fim">A conversa começa pelo WhatsApp, com quem cuida do funil. Sem formulário e sem intermediário.</p>
+    <ol class="passos col12">
+      
+      <li class="item esq entra">
+        <span class="numeral t-destaque n96" aria-hidden="true">01</span>
+        <div><h3 class="t-sub">Conversa inicial</h3><p class="t-corpo texto-2 mt12 max40">Você conta como o cliente chega hoje, o que acontece com a mensagem e se ele volta. Nós ouvimos e perguntamos.</p></div>
+      </li>
+      <li class="item dir entra">
+        <span class="numeral t-destaque n96" aria-hidden="true">02</span>
+        <div><h3 class="t-sub">Leitura e proposta</h3><p class="t-corpo texto-2 mt12 max40">Voltamos com uma leitura das duas portas e uma proposta com escopo definido: o que entra no funil de aquisição, o que entra no de retenção e como o acompanhamento funciona.</p></div>
+      </li>
+      <li class="item esq entra">
+        <span class="numeral t-destaque n96" aria-hidden="true">03</span>
+        <div><h3 class="t-sub">Implantação e acompanhamento</h3><p class="t-corpo texto-2 mt12 max40">Montamos o funil dentro da sua empresa, com o seu time. A partir daí, revisamos campanha, funil e retorno em conversas periódicas com você.</p></div>
+      </li>
+    </ol>
+    <div class="dir acoes entra"><a class="botao  " href="https://wa.me/5575988023044?text=Ol%C3%A1%2C%20Lemis.%20Quero%20conversar%20sobre%20implantar%20o%20funil%20de%20aquisi%C3%A7%C3%A3o%20e%20de%20reten%C3%A7%C3%A3o%20na%20minha%20empresa." target="_blank" rel="noopener noreferrer">Vamos conversar<svg class="" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#seta-externa"/></svg><span class="sr-only">(abre em nova aba)</span></a><p class="t-legenda texto-2">Conversa pelo WhatsApp com quem cuida do funil.</p></div>
+  </div>
+</section>
+
+<!-- 8 · Perguntas -->
+<section id="perguntas" class="campo-tinta separador">
+  <span class="trilho feixe v" style="--atraso:1.6s" aria-hidden="true"></span>
+  <div class="container g12">
+    <h2 class="t-titulo esq fixo entra">Perguntas que aparecem antes da primeira conversa</h2>
+    <div class="dir entra"><div class=""><details class="detalhe" open>
+  <summary><span class="n t-destaque t-destaque-claro" aria-hidden="true">01</span><span>Já tenho CRM. Vocês usam o meu?</span><span class="sinal" aria-hidden="true"></span></summary>
+  <p class="resposta t-corpo texto-2">Avaliamos a ferramenta que você já usa antes de propor qualquer mudança. O que importa é cada contato ter origem registrada, próximo passo claro e hora de voltar.</p>
+</details><details class="detalhe">
+  <summary><span class="n t-destaque t-destaque-claro" aria-hidden="true">02</span><span>Vocês assumem as vendas?</span><span class="sinal" aria-hidden="true"></span></summary>
+  <p class="resposta t-corpo texto-2">Não. O funil roda dentro da sua empresa, com o seu time. Alinhamos como cada contato é respondido, acompanhamos o que avança e o que volta, e ajustamos a partir disso. Quem fala com o cliente continua sendo você, salvo escopo combinado em proposta.</p>
+</details><details class="detalhe">
+  <summary><span class="n t-destaque t-destaque-claro" aria-hidden="true">03</span><span>Já investi em anúncio e não deu certo. Por que agora seria diferente?</span><span class="sinal" aria-hidden="true"></span></summary>
+  <p class="resposta t-corpo texto-2">Porque o anúncio não trabalha sozinho. Quando a mensagem chega e não tem caminho, o problema parece ser o anúncio. Implantar o funil é cuidar do que acontece depois do clique e do que acontece depois da compra.</p>
+</details><details class="detalhe">
+  <summary><span class="n t-destaque t-destaque-claro" aria-hidden="true">04</span><span>Preciso contratar tudo?</span><span class="sinal" aria-hidden="true"></span></summary>
+  <p class="resposta t-corpo texto-2">Não. O escopo é definido em proposta a partir do que as suas duas portas precisam. Cada frente entra quando faz sentido.</p>
+</details><details class="detalhe">
+  <summary><span class="n t-destaque t-destaque-claro" aria-hidden="true">05</span><span>Vocês garantem uma quantidade de clientes por mês?</span><span class="sinal" aria-hidden="true"></span></summary>
+  <p class="resposta t-corpo texto-2">Não. Trabalhamos para o caminho existir e rodar, e explicamos os critérios por trás de cada ajuste. Quantidade e custo dependem da oferta, do mercado e da resposta ao cliente, e por isso não entram como promessa.</p>
+</details></div></div>
+  </div>
+</section>
+
+<!-- 9 · CTA -->
+<section id="contato" class="campo-azul cta">
+  <span class="trilho feixe v" style="--atraso:2.4s" aria-hidden="true"></span>
+  <span class="motivo" aria-hidden="true"><svg class="" viewBox="0 0 640 320" aria-hidden="true" focusable="false"><use href="#motivo"/></svg></span>
+  <div class="container g12">
+    <div class="esq">
+      <h2 class="t-display t-display-denso entra">Mande uma mensagem contando como o cliente chega hoje.</h2>
+      <p class="t-lead mt32 max39 entra">Do que você contar sai a leitura das suas duas portas e uma proposta com escopo definido: o que entra no funil de aquisição, o que entra no de retenção e como o acompanhamento funciona.</p>
+      <div class="acoes entra"><a class="botao sobre-azul " href="https://wa.me/5575988023044?text=Ol%C3%A1%2C%20Lemis.%20Quero%20conversar%20sobre%20implantar%20o%20funil%20de%20aquisi%C3%A7%C3%A3o%20e%20de%20reten%C3%A7%C3%A3o%20na%20minha%20empresa." target="_blank" rel="noopener noreferrer">Vamos conversar<svg class="" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#seta-externa"/></svg><span class="sr-only">(abre em nova aba)</span></a><p class="t-legenda">Conversa pelo WhatsApp com quem cuida do funil.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="rodape campo-tinta">
+  <div class="container">
+    <div class="colunas">
+      <div>
+        <a class="wordmark" href="#inicio" aria-label="Lemis, voltar ao início"><svg class="" viewBox="0 0 368 106" aria-hidden="true" focusable="false"><use href="#wordmark"/></svg></a>
+        <p class="apoio t-corpo texto-2">Tráfego, estratégia comercial, automação e IA a serviço de um funil que roda dentro da sua empresa.</p>
+      </div>
+      <nav aria-label="Rodapé">
+        <p class="t-rotulo texto-2">Navegar</p>
+        <ul><li><a class="t-corpo" href="#como-funciona">Como funciona</a></li><li><a class="t-corpo" href="#aquisicao">Aquisição</a></li><li><a class="t-corpo" href="#retencao">Retenção</a></li><li><a class="t-corpo" href="#como-comeca">Como começa</a></li><li><a class="t-corpo" href="#perguntas">Perguntas</a></li></ul>
+      </nav>
+      <div>
+        <p class="t-rotulo texto-2">Conversar</p>
+        <ul><li><a class="t-corpo link-seta" href="https://wa.me/5575988023044?text=Ol%C3%A1%2C%20Lemis.%20Quero%20conversar%20sobre%20implantar%20o%20funil%20de%20aquisi%C3%A7%C3%A3o%20e%20de%20reten%C3%A7%C3%A3o%20na%20minha%20empresa." target="_blank" rel="noopener noreferrer">WhatsApp<svg class="" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><use href="#seta-externa"/></svg><span class="sr-only">(abre em nova aba)</span></a></li></ul>
+      </div>
+    </div>
+    <div class="legal t-legenda texto-2">
+      <p>APL Digital — Assessoria em Marketing · CNPJ 44.840.036/0001-59</p>
+      <p>Rua Rio de Janeiro, 243, Sala 802, Centro, Belo Horizonte, MG, CEP 30160-040</p>
+      <p class="assinatura">© Lemis</p>
+    </div>
+  </div>
+</footer>
+
+
+</body>
+</html>

@@ -1,13 +1,14 @@
+import { Aquisicao } from "@/components/secoes/Aquisicao";
+import { ComoComeca } from "@/components/secoes/ComoComeca";
 import { CtaFinal } from "@/components/secoes/CtaFinal";
+import { DuasPortas } from "@/components/secoes/DuasPortas";
 import { Footer } from "@/components/secoes/Footer";
-import { Fundamentos } from "@/components/secoes/Fundamentos";
 import { Header } from "@/components/secoes/Header";
 import { Hero } from "@/components/secoes/Hero";
-import { ParaQuem } from "@/components/secoes/ParaQuem";
+import { OQueVoceVe } from "@/components/secoes/OQueVoceVe";
 import { Perguntas } from "@/components/secoes/Perguntas";
-import { Problema } from "@/components/secoes/Problema";
-import { ProximoPasso } from "@/components/secoes/ProximoPasso";
-import { Servicos } from "@/components/secoes/Servicos";
+import { Retencao } from "@/components/secoes/Retencao";
+import { Virada } from "@/components/secoes/Virada";
 
 export default function Page() {
   return (
@@ -15,11 +16,12 @@ export default function Page() {
       <Header />
       <main id="conteudo" tabIndex={-1} className="outline-none">
         <Hero />
-        <Problema />
-        <Servicos />
-        <Fundamentos />
-        <ParaQuem />
-        <ProximoPasso />
+        <DuasPortas />
+        <Virada />
+        <Aquisicao />
+        <Retencao />
+        <OQueVoceVe />
+        <ComoComeca />
         <Perguntas />
         <CtaFinal />
       </main>
