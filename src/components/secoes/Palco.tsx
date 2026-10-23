@@ -1,10 +1,11 @@
 import { palco } from "@/lib/conteudo";
-import { Celular } from "../Celular";
 import { Etiqueta } from "../ui/Etiqueta";
 
-// O celular no centro e as duas palavras dos lados, como no protótipo: "Chega." (aquisição) à
-// esquerda, "Volta." (retenção) à direita, com o mesmo peso (decisão 5 da copy). No celular, as
-// palavras vão para cima e para baixo do aparelho.
+// As duas palavras dos lados, como no protótipo: "Chega." (aquisição) à esquerda, "Volta."
+// (retenção) à direita, com o mesmo peso (decisão 5 da copy). No centro, o laço grande sobre o
+// pontilhado: o manual o descreve como a ligação contínua, o funil que não perde o cliente. O celular
+// do painel já aparece no hero e na seção Painel (revisão do Patrão, 23/10: quatro celulares iguais
+// ficavam repetitivos).
 export function Palco() {
   return (
     <section aria-labelledby="palco-etiqueta" className="overflow-hidden pt-20 pb-16 lg:pt-[120px] lg:pb-10">
@@ -14,7 +15,10 @@ export function Palco() {
         </p>
         <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-8">
           <Lado palavra={palco.esquerda.palavra} linha={palco.esquerda.linha} lado="esquerda" />
-          <Celular className="mx-auto lg:order-none" />
+          <div aria-hidden="true" className="pontos mx-auto grid size-[280px] place-items-center rounded-full bg-azul-50 sm:size-[340px] lg:size-[420px]">
+            {/* eslint-disable-next-line @next/next/no-img-element -- laço da marca */}
+            <img src="/marca/simbolo-cor.svg" alt="" width={220} height={220} className="size-[150px] sm:size-[180px] lg:size-[220px]" />
+          </div>
           <Lado palavra={palco.direita.palavra} linha={palco.direita.linha} lado="direita" />
         </div>
       </div>

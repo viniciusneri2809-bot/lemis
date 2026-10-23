@@ -1,12 +1,13 @@
 import { chamadaFinal } from "@/lib/conteudo";
-import { Celular } from "../Celular";
 import { BotaoWhatsApp } from "../ui/BotaoWhatsApp";
 
-// O bloco azul do fim (protótipo): o próximo passo concreto e o celular inclinado, cortado pela base.
+// O bloco azul do fim (protótipo): o próximo passo concreto e, à direita, o laço claro sobre o azul
+// (`simbolo-claros-sobre-azul`, manual §1), grande e cortado pela borda. O celular saiu daqui para não
+// repetir a mesma tela pela quarta vez (revisão do Patrão, 23/10).
 export function ChamadaFinal() {
   return (
     <section aria-labelledby="chamada-titulo" className="px-5 sm:px-10 lg:px-14">
-      <div className="gradiente-final relative mx-auto grid max-w-[1328px] overflow-hidden rounded-xl px-7 pt-14 pb-14 sm:px-12 lg:h-[520px] lg:grid-cols-[1.1fr_1fr] lg:px-20 lg:pt-20 lg:pb-0">
+      <div className="gradiente-final relative mx-auto grid max-w-[1328px] overflow-hidden rounded-xl px-7 pt-14 pb-14 sm:px-12 lg:min-h-[440px] lg:grid-cols-[1.1fr_1fr] lg:items-center lg:px-20 lg:py-20">
         <div>
           <h2 id="chamada-titulo" className="text-[34px] leading-[1.1] tracking-[-0.035em] text-white lg:text-[44px]">
             {chamadaFinal.titulo}
@@ -17,9 +18,8 @@ export function ChamadaFinal() {
           </BotaoWhatsApp>
         </div>
         <div aria-hidden="true" className="relative hidden lg:block">
-          <div className="absolute top-2.5 left-[150px] rotate-6">
-            <Celular />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element -- laço da marca */}
+          <img src="/marca/simbolo-claros-sobre-azul.svg" alt="" width={460} height={460} className="absolute top-1/2 -right-16 size-[460px] -translate-y-1/2" />
         </div>
       </div>
     </section>
