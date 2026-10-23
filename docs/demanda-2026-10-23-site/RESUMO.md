@@ -23,6 +23,11 @@ Branch `feat/site-identidade-nova`, aberta da main em `a30c287` (worktree `~/Pro
 - Contraste dos pares novos ≥ 4,5:1. O mais apertado é branco sobre o topo do degradê, 4,56:1, igual ao manual.
 - Capturas em `capturas/`: desktop 1440 (página inteira), celular 390 (página inteira e telas), menu do celular aberto, tablet 768 e a OG.
 
+## Revisão do Patrão (23/10)
+
+1. **Indicador "N" no canto do hero:** é do `next dev`, não vaza no build. Conferido no `next start`: não há `nextjs-portal` na página, e as capturas foram refeitas no build de produção.
+2. **O mesmo celular quatro vezes:** agora aparece só no hero e na seção Painel. No "Chega. / Volta." entra o laço grande sobre o pontilhado, e na chamada final o laço claro sobre o azul (`simbolo-claros-sobre-azul`). Não variei as telas do celular porque a copy fixa os rótulos dele "em todas as telas"; uma tela de funil ou de ranking pediria texto novo. No celular, o aparelho aparece uma vez só.
+
 ## Decisões tomadas pelo Dash Lemis (autorização do Vinicius de 23/10 pela madrugada, via Patrão: "AGILIZA o que tiver de fazer, eu autorizo, só faz tudo")
 
 Cada uma é a recomendação do Dash. Fica a marca abaixo até o sim dele de manhã, que é também o sim para publicar.

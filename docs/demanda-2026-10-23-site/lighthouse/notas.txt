@@ -2,3 +2,6 @@
 mobile    performance=96 accessibility=100 best-practices=100 seo=100 LCP 2.7 s CLS 0 TBT 10 ms
 mobile-2  performance=96 accessibility=100 best-practices=100 seo=100 LCP 2.8 s CLS 0 TBT 0 ms
 desktop   performance=100 accessibility=100 best-practices=100 seo=100 LCP 0.6 s CLS 0 TBT 0 ms
+# Depois da revisão do Patrão (celular só no hero e no Painel; laço no Chega/Volta e na chamada final), 23/10:
+mobile    performance=97 accessibility=100 best-practices=100 seo=100 LCP 2.6 s CLS 0 TBT 20 ms
+desktop   performance=100 accessibility=100 best-practices=100 seo=100 LCP 0.6 s CLS 0 TBT 0 ms
