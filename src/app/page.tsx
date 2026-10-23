@@ -1,31 +1,26 @@
-import { Aquisicao } from "@/components/secoes/Aquisicao";
+import { ChamadaFinal } from "@/components/secoes/ChamadaFinal";
 import { ComoComeca } from "@/components/secoes/ComoComeca";
-import { CtaFinal } from "@/components/secoes/CtaFinal";
-import { DuasPortas } from "@/components/secoes/DuasPortas";
-import { Footer } from "@/components/secoes/Footer";
-import { Header } from "@/components/secoes/Header";
+import { ComoFunciona } from "@/components/secoes/ComoFunciona";
 import { Hero } from "@/components/secoes/Hero";
-import { OQueVoceVe } from "@/components/secoes/OQueVoceVe";
+import { Painel } from "@/components/secoes/Painel";
+import { Palco } from "@/components/secoes/Palco";
 import { Perguntas } from "@/components/secoes/Perguntas";
-import { Retencao } from "@/components/secoes/Retencao";
-import { Virada } from "@/components/secoes/Virada";
+import { Rodape } from "@/components/secoes/Rodape";
 
-export default function Page() {
+// A home, na ordem do protótipo aprovado e da copy de 23/10.
+export default function Pagina() {
   return (
     <>
-      <Header />
       <main id="conteudo" tabIndex={-1} className="outline-none">
         <Hero />
-        <DuasPortas />
-        <Virada />
-        <Aquisicao />
-        <Retencao />
-        <OQueVoceVe />
+        <Palco />
+        <ComoFunciona />
+        <Painel />
         <ComoComeca />
         <Perguntas />
-        <CtaFinal />
+        <ChamadaFinal />
       </main>
-      <Footer />
+      <Rodape />
     </>
   );
 }

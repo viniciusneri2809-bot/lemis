@@ -1,32 +1,25 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { Grao } from "@/components/efeitos/Grao";
-import { Providers } from "@/components/efeitos/Providers";
-import { metadados, textosDeInterface } from "@/lib/conteudo";
+import { interfaceTextos, metadados } from "@/lib/conteudo";
 import "./globals.css";
 
-const geist = localFont({
-  src: "./fonts/Geist.woff2",
-  variable: "--font-geist",
-  weight: "100 900",
+// As duas famílias do manual (§3), subconjunto latino, licença OFL ao lado do arquivo.
+// Plus Jakarta Sans no título e no número grande; Inter no texto, na interface e no botão.
+const jakarta = localFont({
+  src: "./fonts/PlusJakartaSans-latin.woff2",
+  variable: "--fonte-titulo",
+  weight: "200 800",
   display: "swap",
 });
 
-// Segunda família, só na classe `t-destaque`: uma palavra por título e os numerais de marco.
-// `adjustFontFallback` casa a métrica do fallback e mantém o CLS em 0.
-// Fica no `preload`: a palavra em destaque está dentro do H1, que é o elemento de LCP. Fora do
-// preload, a serifada chega depois da primeira pintura, a largura da palavra muda e o
-// `text-wrap: balance` do `t-display` recalcula as quebras — CLS de 0,023 no desktop, medido.
-// Com o H1 curto (a frase de marca), o custo de banda do preload cabe: mobile 96, LCP 2,8 s.
-// Foi medido nos dois sentidos — com o H1 longo de entrega, o mesmo preload derrubava o mobile
-// para 95, e foi por isso que ele chegou a sair.
-const instrumentSerif = localFont({
-  src: "./fonts/InstrumentSerif-Italic.woff2",
-  variable: "--font-serif",
-  weight: "400",
-  style: "italic",
+// Sem preload: no celular, a foto do hero é o LCP e disputava banda com as duas fontes (Lighthouse
+// mobile 95 com as duas no preload). A métrica da fonte de reserva é ajustada pelo Next: CLS segue 0.
+const inter = localFont({
+  src: "./fonts/Inter-latin.woff2",
+  variable: "--fonte-texto",
+  weight: "100 900",
   display: "swap",
-  adjustFontFallback: "Times New Roman",
+  preload: false,
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -41,26 +34,24 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     type: "website",
   },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary_large_image", title: metadados.titulo, description: metadados.descricao },
   other: {
     "facebook-domain-verification": "fwwylg5o7law0r7vi5cdw00gm23aw8",
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export const viewport: Viewport = {
+  themeColor: "#0B1020",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${geist.variable} ${instrumentSerif.variable}`}>
-      <body className="campo-tinta font-sans">
-        <noscript>
-          <style>{`[style*="opacity:0"],[style*="opacity: 0"]{opacity:1!important;transform:none!important;filter:none!important}`}</style>
-        </noscript>
-        <a href="#conteudo" className="skip-link">
-          {textosDeInterface.pularParaConteudo}
+    <html lang="pt-BR" className={`${jakarta.variable} ${inter.variable}`}>
+      <body>
+        <a href="#conteudo" className="pular">
+          {interfaceTextos.pular}
         </a>
-        <Providers>{children}</Providers>
-        <Grao />
+        {children}
       </body>
     </html>
   );

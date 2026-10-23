@@ -2,33 +2,20 @@
 // Verificação de marca: palavras proibidas, cores fora da paleta, opacidade em texto,
 // "APL" fora do rodapé e fonte fora do sistema.
 //
-// Atualizado em 20/09/2026 com o posicionamento novo (funil de aquisição e de retenção):
-//  - "IA", "inteligência artificial" e "automação" DEIXAM de ser proibidas. São o meio pelo
-//    qual o funil roda e podem ser citadas, nunca explicadas.
-//    Origem: decisoes/2026-09-20-automacao-e-ia-citadas-como-meio.
-//  - "agentes" continua proibida: descrever agente ou atendimento autônomo é explicar o
-//    mecanismo de IA, que é justamente o que a decisão não liberou.
-//  - Itálico e serifa passam a ser aceitos, mas só onde a classe `t-destaque` é definida e a
-//    fonte é carregada. Em componente, a palavra "italic" continua reprovada: o caminho é a
-//    classe. Origem: plano do site v2, §7.2.
-//  - Entra a trava "Lemis Company": o domínio tem "company", o nome escrito nunca.
-//    Origem: decisoes/2026-09-18-rebrand-apl-para-lemis-brand-e-legado.
-//  - Entra a trava de nicho de cliente em peça institucional.
-//    Origem: decisoes/2026-09-18-apresentacao-institucional-nao-cita-nicho.
-//  - E a trava de nicho POR VOCABULÁRIO (20/09/2026). O site passou no teste que procura o nome do
-//    nicho — "clínica", "paciente", "consultório" davam zero — e mesmo assim o Vinicius leu e disse:
-//    "Tanto a apresentacao quanto o site tem elementos que parecem focar somente em clínicas. Mas
-//    atendemos empresas de servico no geral." O que nichava era o vocabulário do funil: as etapas
-//    terminavam em "Agendado" e "Compareceu" e a retenção falava em "some da agenda". Um dono de
-//    escritório, de agência, de escola ou de oficina lê "Compareceu" e entende que a peça não é
-//    para ele, sem a palavra "clínica" aparecer uma vez.
-//    Origem: decisoes/2026-09-20-peca-institucional-fala-de-empresa-de-servico.
-//  - Entra a trava de frase de impacto: as frases de marca já reprovadas pelo Vinicius não
-//    voltam ao site por descuido. Origem: decisoes/2026-09-20-nada-de-frase-de-impacto-a-entrega-ocupa-o-lugar
-//    A trava cobre TRÊS textos: a frase antiga, a frase de marca "Cliente novo entrando..." e a
-//    frase de apoio "... a serviço de um funil ...". As duas últimas vinham de
-//    decisoes/2026-09-20-frase-de-marca-cliente-novo-entrando, REVOGADA em 20/09/2026 por
-//    registrar uma escolha do Vinicius que nunca aconteceu.
+// Atualizado em 23/10/2026 com a identidade nova, aprovada pelo Vinicius ("Aprovo"):
+//  - A paleta é a de `Lemis/identidade-visual/tokens.css` (claro): azul #1F5EF2, azul 50, ação,
+//    névoa, linha, tinta, texto, cinza, as cores de dado e as funcionais. Entram também os tons das
+//    etapas do protótipo aprovado (rodada 2): #E7FAF1, #FFF1EA e #B4441A. As cores do laço vivem
+//    dentro dos SVGs de `public/marca` e não passam por aqui.
+//  - A trava agora lê também `rgb()`/`rgba()`: sombra e véu só com os tons da paleta.
+//  - Sai a identidade de 16/09: o azul #304CFF, o papel #F4F1EA, a Geist e a serifa reprovam por nome,
+//    em qualquer arquivo, para não voltarem por cópia.
+//  - "agentes" deixa de ser proibida: "pode citar agentes" (Vinicius, 23/10, COPY-SITE.md, decisão 7).
+//
+// Histórico (20/09/2026, posicionamento do funil de aquisição e de retenção): "IA", "inteligência
+// artificial" e "automação" citadas como meio; trava "Lemis Company"; trava de nicho por nome e por
+// vocabulário de consultório (decisoes/2026-09-20-peca-institucional-fala-de-empresa-de-servico);
+// trava de frase de impacto reprovada.
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
@@ -36,11 +23,21 @@ const raiz = process.cwd();
 const src = join(raiz, "src");
 
 const PALETA = new Set([
-  "304cff", "f4f1ea", "17191d", "ffffff", "666a73", "adb2bd", "203ad9", "182caf",
+  // tokens.css, tema claro
+  "1f5ef2", "edf3ff", "2f6bfa", "1748c4", "ffffff", "f6f7f9", "e5e8ee", "1b2130", "0b1020", "5a6273",
+  "b52b39", "147344",
+  // cores de dado
+  "2f6bff", "3ddc97", "ff8a5b",
+  // tons das etapas no protótipo aprovado (rodada 2)
+  "e7faf1", "fff1ea", "b4441a",
 ]);
 
+function hexDe(r, g, b) {
+  return [r, g, b].map((n) => Number(n).toString(16).padStart(2, "0")).join("");
+}
+
 const PROIBIDAS = [
-  [/\bagentes?\b/i, "menção a agentes (IA e automação são citadas, nunca explicadas)"],
+  [/304cff|f4f1ea|\bgeist\b|instrument\s*serif|\bcoral\b/i, "identidade antiga (azul #304CFF, papel, Geist, serifa ou coral)"],
   [/\búnica\b/i, "\"única\""],
   [/\ba melhor\b/i, "\"a melhor\""],
   [/exclusiv/i, "\"exclusivo\""],
@@ -68,10 +65,9 @@ const PROIBIDAS = [
   [/pr[óo]ximo passo tem dire[çc][ãa]o/i, "frase de marca reprovada pelo Vinicius"],
 ];
 
-const ISENTOS_APL = new Set(["src/lib/conteudo.ts", "src/components/secoes/Footer.tsx"]);
-// Itálico e serifa vivem só onde a classe `t-destaque` é definida e a fonte é carregada.
-const ISENTOS_FONTE = new Set(["src/app/globals.css", "src/app/layout.tsx"]);
-const ISENTOS_NUMERO = new Set(["src/lib/contato.ts", "src/lib/conteudo.ts", "src/components/secoes/Footer.tsx", "src/app/opengraph-image.tsx"]);
+const ISENTOS_APL = new Set(["src/lib/conteudo.ts", "src/components/secoes/Rodape.tsx"]);
+// O rodapé e o conteúdo levam o CNPJ, o telefone e os números de exemplo do celular do painel.
+const ISENTOS_NUMERO = new Set(["src/lib/contato.ts", "src/lib/conteudo.ts", "src/components/secoes/Rodape.tsx", "src/app/opengraph-image.tsx"]);
 
 function arquivos(dir) {
   return readdirSync(dir).flatMap((nome) => {
@@ -108,9 +104,13 @@ for (const caminho of arquivos(src)) {
     for (const m of linha.matchAll(/#([0-9a-fA-F]{6})\b/g)) {
       if (!PALETA.has(m[1].toLowerCase())) problemas.push(`${rel}:${i + 1}: cor fora da paleta #${m[1]}`);
     }
+    for (const m of linha.matchAll(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/g)) {
+      const hex = hexDe(m[1], m[2], m[3]);
+      if (!PALETA.has(hex)) problemas.push(`${rel}:${i + 1}: cor fora da paleta rgb(${m[1]}, ${m[2]}, ${m[3]})`);
+    }
     if (/\bopacity-(\d|\[)/.test(linha) && !rel.startsWith("src/components/efeitos/") && !/aria-hidden|Padrao|Glow|Grao/.test(linha)) problemas.push(`${rel}:${i + 1}: opacidade fora de elemento gráfico`);
     if (/\btext-[a-z-]+\/\d{1,3}\b/.test(linha)) problemas.push(`${rel}:${i + 1}: texto com alfa`);
-    if (/font-mono|font-serif|italic/.test(linha) && !ISENTOS_FONTE.has(rel)) problemas.push(`${rel}:${i + 1}: fonte fora do sistema (use a classe t-destaque)`);
+    if (/font-mono|font-serif|italic/.test(linha)) problemas.push(`${rel}:${i + 1}: fonte fora do sistema (Plus Jakarta Sans e Inter, manual §3)`);
   });
 }
 

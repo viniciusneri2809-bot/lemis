@@ -1,508 +1,120 @@
-@import "tailwindcss" source(none);
-@source "../";
+@import "tailwindcss";
 
+/* Identidade Lemis de 23/10/2026: os tokens de `Lemis/identidade-visual/tokens.css` como tema do Tailwind.
+   Uma cor de marca só, o azul; o resto é neutro. Cores de dado só no celular do painel (gráfico e etapas).
+   As cores do laço vêm dentro dos SVGs da marca e não aparecem aqui. */
 @theme {
-  --color-*: initial;
-  --color-azul: #304cff;
-  --color-papel: #f4f1ea;
-  --color-tinta: #17191d;
-  --color-branco: #ffffff;
-  --color-secundario: #666a73;
-  --color-secundario-escuro: #adb2bd;
-  --color-azul-hover: #203ad9;
-  --color-azul-ativo: #182caf;
-  /* Um degrau abaixo da tinta. Dá profundidade ao campo sem card: é o fundo da faixa
-     do hero e da laje das duas portas. `#000` tem 3 dígitos e não é cor de paleta. */
-  --color-tinta-funda: color-mix(in srgb, #17191d 82%, #000);
-  --color-fio-claro: color-mix(in srgb, #17191d 14%, transparent);
-  --color-fio-escuro: color-mix(in srgb, #ffffff 16%, transparent);
+  --color-azul: #1F5EF2;
+  --color-azul-50: #EDF3FF;
+  --color-acao: #1F5EF2;
+  --color-acao-topo: #2F6BFA;
+  --color-acao-pressionado: #1748C4;
+  --color-fundo: #FFFFFF;
+  --color-nevoa: #F6F7F9;
+  --color-linha: #E5E8EE;
+  --color-forte: #0B1020;
+  --color-texto: #1B2130;
+  --color-fraco: #5A6273;
+  --color-sucesso: #147344;
+  --color-dado-1: #2F6BFF;
+  --color-dado-2: #3DDC97;
+  --color-dado-3: #FF8A5B;
+  /* Tons das etapas no protótipo aprovado (rodada 2): o fundo claro de cada etapa e o texto que lê
+     sobre ele. O verde de texto é o `--sucesso` do manual. */
+  --color-dado-2-50: #E7FAF1;
+  --color-dado-3-50: #FFF1EA;
+  --color-dado-3-texto: #B4441A;
 
-  --font-sans: var(--font-geist), Arial, sans-serif;
-  --font-destaque: var(--font-serif), Georgia, serif;
+  --font-titulo: var(--fonte-titulo), "Plus Jakarta Sans", var(--fonte-texto), system-ui, sans-serif;
+  --font-sans: var(--fonte-texto), Inter, system-ui, sans-serif;
 
-  --radius-*: initial;
-  --radius-md: 8px;
+  --radius-s: 10px;
+  --radius-m: 16px;
+  --radius-l: 24px;
+  --radius-xl: 32px;
 
-  --animate-acordeao-abrir: acordeao-abrir 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  --animate-acordeao-fechar: acordeao-fechar 0.24s cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-lemis: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-cartao: 0 1px 2px rgba(11, 16, 32, 0.04), 0 8px 24px rgba(11, 16, 32, 0.06);
+  --shadow-flutua: 0 24px 60px rgba(11, 16, 32, 0.18);
+  --shadow-botao: 0 6px 16px rgba(31, 94, 242, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  --shadow-botao-branco: 0 4px 14px rgba(11, 16, 32, 0.12);
+
+  --ease-saida: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 88px;
     -webkit-text-size-adjust: 100%;
   }
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
+    html { scroll-behavior: auto; }
   }
   body {
+    background: var(--color-fundo);
+    color: var(--color-texto);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    /* A sangria total mede 100vw, que inclui a barra de rolagem. `clip` corta a sobra sem
-       criar contexto de rolagem — `hidden` criaria, e o header sticky pararia de grudar. */
-    overflow-x: clip;
+    text-rendering: optimizeLegibility;
   }
-  ::selection {
-    background: var(--color-azul);
-    color: var(--color-branco);
-  }
-  :focus-visible {
-    outline: 2px solid var(--cor-foco, var(--color-azul));
-    outline-offset: 3px;
-  }
-  summary::-webkit-details-marker {
-    display: none;
-  }
-}
-
-@layer components {
-  /* Campos: cada um define a cor de foco para os controles dentro dele. */
-  .campo-papel {
-    background-color: var(--color-papel);
-    color: var(--color-tinta);
-    --cor-foco: var(--color-azul);
-  }
-  .campo-tinta {
-    background-color: var(--color-tinta);
-    color: var(--color-branco);
-    --cor-foco: var(--color-branco);
-  }
-  .campo-azul {
-    background-color: var(--color-azul);
-    color: var(--color-branco);
-    --cor-foco: var(--color-branco);
-  }
-
-  /* Escala tipográfica (sistema-visual.md §3). */
-  .t-display {
-    font-weight: 900;
-    font-size: clamp(2.75rem, 6.5vw, 6rem);
-    line-height: 1.02;
-    letter-spacing: -0.04em;
+  h1, h2, h3 {
+    font-family: var(--font-titulo);
+    color: var(--color-forte);
+    font-weight: 700;
     text-wrap: balance;
   }
-  /* Título de entrega: a copy descreve o que a casa implanta e é mais longa que
-     um slogan, então quem cede é a calibragem, não o texto (decisão de 20/09/2026,
-     decisoes/2026-09-20-composicao-cede-antes-do-texto). Mesmo peso do t-display,
-     teto de corpo menor e entrelinha um pouco maior. */
-  .t-display-denso {
-    font-size: clamp(2.125rem, 4.4vw, 4rem);
-    line-height: 1.06;
-    letter-spacing: -0.035em;
-  }
-  .t-titulo {
-    font-weight: 900;
-    font-size: clamp(2rem, 3.6vw, 3rem);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    text-wrap: balance;
-  }
-  .t-sub {
-    font-weight: 600;
-    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
-    line-height: 1.25;
-    letter-spacing: -0.015em;
-    text-wrap: pretty;
-  }
-  .t-lead {
-    font-weight: 400;
-    font-size: clamp(1.125rem, 1.5vw, 1.25rem);
-    line-height: 1.5;
-    text-wrap: pretty;
-  }
-  .t-corpo {
-    font-weight: 400;
-    font-size: 1.0625rem;
-    line-height: 1.55;
-    text-wrap: pretty;
-  }
-  @media (min-width: 768px) {
-    .t-corpo {
-      font-size: 1.125rem;
-    }
-  }
-  .t-legenda {
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 1.45;
-  }
-  .t-rotulo {
-    font-weight: 600;
-    font-size: 0.75rem;
-    line-height: 1.4;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--color-azul); color: #FFFFFF; }
+  :focus-visible { outline: 2px solid var(--color-azul); outline-offset: 3px; border-radius: 6px; }
+  * { scrollbar-color: color-mix(in srgb, var(--color-fraco) 45%, transparent) transparent; }
+}
 
-  .t-controle {
-    font-weight: 600;
-    font-size: 1rem;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-  }
+/* Pular para o conteúdo: só aparece no foco do teclado. */
+@utility pular {
+  position: absolute;
+  left: 16px;
+  top: -64px;
+  z-index: 60;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--color-forte);
+  color: #FFFFFF;
+  font-weight: 600;
+  &:focus { top: 16px; }
+}
 
-  /* Palavra em destaque: só dentro de t-display / t-titulo e em numerais de marco
-     (>= 40px). Azul sobre tinta e 3,02:1, aprovado so para texto grande. */
-  .t-destaque {
-    font-family: var(--font-destaque);
-    font-style: italic;
-    font-weight: 400;
-    color: var(--color-azul);
-    letter-spacing: -0.01em;
-  }
-  /* Mesma serifa, sem o azul. Serve onde o numeral é pequeno demais para o azul sobre tinta:
-     em 24px o par fica em 3,02:1, exatamente no limite de "texto grande", e o traço fino da
-     Instrument Serif é o pior caso da regra. Branco sobre tinta é 15,9:1 em qualquer corpo. */
-  .t-destaque-claro {
-    color: var(--color-branco);
-  }
+/* A textura do manual (§5): pontilhado azul a 22% nos blocos de produto. */
+@utility pontos {
+  background-image: radial-gradient(circle, rgba(31, 94, 242, 0.22) 1px, transparent 1.4px);
+  background-size: 14px 14px;
+}
 
-  /* Cantoneiras: quatro "L" nos cantos do container da secao. */
-  .cantoneira {
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    border-color: color-mix(in srgb, currentColor 25%, transparent);
-    border-style: solid;
-    border-width: 0;
-    pointer-events: none;
-  }
-  .campo-papel .cantoneira {
-    border-color: color-mix(in srgb, currentColor 14%, transparent);
-  }
-  .cantoneira-tl { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; }
-  .cantoneira-tr { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; }
-  .cantoneira-bl { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
-  .cantoneira-br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
+/* O botão principal do manual: degradê vertical leve de `acao-topo` para `acao`. */
+@utility gradiente-acao {
+  background-image: linear-gradient(180deg, var(--color-acao-topo), var(--color-acao));
+}
 
-  /* Hachura fina nas margens externas (so xl). */
-  .hachura {
-    background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-branco) 4%, transparent) 0 1px, transparent 1px 10px);
-  }
-  .campo-papel .hachura {
-    background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-tinta) 5%, transparent) 0 1px, transparent 1px 10px);
-  }
+/* O fundo da chamada final, do protótipo aprovado. */
+@utility gradiente-final {
+  background-image: linear-gradient(135deg, var(--color-acao-topo) 0%, var(--color-azul) 55%, var(--color-acao-pressionado) 100%);
+}
 
-  .skip-link {
-    position: absolute;
-    left: 1rem;
-    top: -100%;
-    z-index: 100;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    background: var(--color-azul);
-    color: var(--color-branco);
-    font-weight: 600;
-  }
-  .skip-link:focus {
-    top: 1rem;
-  }
+/* O véu sobre a foto do hero, do protótipo: escurece a esquerda, onde está o texto. */
+@utility veu-hero {
+  background-image: linear-gradient(90deg, rgba(11, 16, 32, 0.74) 0%, rgba(11, 16, 32, 0.5) 40%, rgba(11, 16, 32, 0.08) 66%, rgba(11, 16, 32, 0) 80%);
+}
+@utility veu-hero-celular {
+  background-image: linear-gradient(180deg, rgba(11, 16, 32, 0.8) 0%, rgba(11, 16, 32, 0.64) 55%, rgba(11, 16, 32, 0.34) 100%);
+}
 
-  .entra-hero { opacity: 1; }
+/* O único movimento da página: o celular do hero sobe e inclina uma vez, saindo de visível. */
+@keyframes chegar {
+  from { transform: translateY(18px) rotate(-1deg); }
+  to { transform: translateY(0) rotate(-4deg); }
+}
+@utility chegar {
+  transform: rotate(-4deg);
   @media (prefers-reduced-motion: no-preference) {
-    .entra-hero {
-      opacity: 0;
-      animation: entra-hero 0.7s var(--ease-lemis) both;
-      animation-delay: calc(var(--i, 0) * 60ms + 60ms);
-    }
+    animation: chegar 900ms var(--ease-saida) both;
   }
-}
-
-@property --fb-angulo {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@keyframes acordeao-abrir {
-  from { height: 0; opacity: 0; }
-  to { height: var(--radix-accordion-content-height); opacity: 1; }
-}
-@keyframes acordeao-fechar {
-  from { height: var(--radix-accordion-content-height); opacity: 1; }
-  to { height: 0; opacity: 0; }
-}
-@keyframes fb-girar {
-  to { --fb-angulo: 360deg; }
-}
-@keyframes entra-hero {
-  from { opacity: 0; transform: translateY(0.5em); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Lenis */
-html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-.lenis.lenis-stopped { overflow: hidden; }
-
-@layer components {
-  /* Superfícies: anel de 1px + sombra suave + fundo um passo acima do campo. */
-  .superficie-clara {
-    background-color: var(--color-branco);
-    border: 1px solid color-mix(in srgb, var(--color-tinta) 10%, transparent);
-    border-radius: 16px;
-    box-shadow:
-      0 1px 2px color-mix(in srgb, var(--color-tinta) 6%, transparent),
-      0 18px 44px -24px color-mix(in srgb, var(--color-tinta) 24%, transparent);
-  }
-  .superficie-escura {
-    background-color: color-mix(in srgb, var(--color-branco) 5%, var(--color-tinta));
-    border: 1px solid color-mix(in srgb, var(--color-branco) 12%, transparent);
-    border-radius: 16px;
-    box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--color-branco) 6%, transparent),
-      0 24px 60px -30px color-mix(in srgb, var(--color-tinta) 80%, transparent);
-  }
-
-  .glow-azul {
-    background: radial-gradient(closest-side, color-mix(in srgb, var(--color-azul) 32%, transparent), transparent 72%);
-  }
-
-  /* Grão: ladrilho SVG estático, rasterizado uma vez. Tinta a 35% de alfa, em soft-light. */
-  .grao {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.1 0 0 0 0 0.11 0 0 0 0.35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-    background-size: 160px 160px;
-    mix-blend-mode: soft-light;
-  }
-
-  /* Holofote: luz azul que segue o cursor num campo escuro. */
-  .holofote {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.5s var(--ease-lemis);
-    background: radial-gradient(560px circle at var(--hx, 50%) var(--hy, 50%), color-mix(in srgb, var(--color-azul) 18%, transparent), transparent 62%);
-  }
-  @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .holofote-ativo > .holofote { opacity: 1; }
-  }
-
-  /* Card com realce radial no cursor e elevação no hover. */
-  .cartao-holofote {
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.35s var(--ease-lemis), box-shadow 0.35s var(--ease-lemis), border-color 0.35s var(--ease-lemis);
-  }
-  .cartao-holofote::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s var(--ease-lemis);
-    background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--color-azul) 11%, transparent), transparent 60%);
-  }
-  @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .cartao-holofote:hover {
-      transform: translateY(-4px);
-      border-color: color-mix(in srgb, var(--color-azul) 35%, transparent);
-      box-shadow:
-        0 1px 2px color-mix(in srgb, var(--color-tinta) 6%, transparent),
-        0 28px 56px -24px color-mix(in srgb, var(--color-tinta) 32%, transparent);
-    }
-    .cartao-holofote:hover::before { opacity: 1; }
-  }
-
-  /* Feixe de borda: realce azul girando na borda (padrão Magic UI, na paleta). */
-  .feixe-borda { position: relative; }
-  .feixe-borda::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s var(--ease-lemis);
-    background: conic-gradient(from var(--fb-angulo), transparent 0deg, transparent 250deg, var(--color-azul) 320deg, transparent 360deg);
-    -webkit-mask: linear-gradient(var(--color-branco) 0 0) content-box, linear-gradient(var(--color-branco) 0 0);
-    mask: linear-gradient(var(--color-branco) 0 0) content-box, linear-gradient(var(--color-branco) 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-  .feixe-borda:hover::after,
-  .feixe-borda:focus-within::after,
-  .feixe-borda.feixe-ativo::after { opacity: 1; }
-  @media (prefers-reduced-motion: no-preference) {
-    .feixe-borda:hover::after,
-    .feixe-borda:focus-within::after,
-    .feixe-borda.feixe-ativo::after { animation: fb-girar 5s linear infinite; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .feixe-borda::after {
-      background: conic-gradient(from 0deg, color-mix(in srgb, var(--color-azul) 60%, transparent), color-mix(in srgb, var(--color-azul) 60%, transparent));
-    }
-  }
-
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   Sistema editorial (direção B, 20/09/2026)
-   decisoes/2026-09-20-home-do-site-segue-a-direcao-editorial
-
-   A tese: o que faz a página bonita é contraste de escala e assimetria, não
-   superfície. Por isso quase toda caixa saiu e as larguras passaram a variar.
-   São sete medidas: o container (1408), a medida de texto (640), a sangria
-   total (100vw), a laje que sangra à direita, a folha que sangra à direita,
-   a folha que sangra à esquerda e a coluna de jornal.
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-@layer components {
-  /* Medida de texto: a linha de leitura confortável, independente do container. */
-  .medida { max-width: 640px; }
-
-  /* Sangria total: o elemento sai do container e ocupa a largura da janela.
-     Funciona dentro ou fora do container, porque os dois são centrados.
-     A sobra da barra de rolagem é cortada pelo `overflow-x: clip` do body. */
-  .sangria { margin-inline: calc(50% - 50vw); }
-
-  /* Folha de papel deslocada: entra pela grade de um lado e sangra pelo outro.
-     O padding do lado que sangra recompõe a distância até a margem do container,
-     para o texto de dentro continuar alinhado com o resto da página. */
-  .folha {
-    border-radius: 24px 0 0 24px;
-    margin-left: 1rem;
-    margin-right: calc(50% - 50vw);
-    padding: 2.5rem 1.5rem;
-  }
-  .folha-esquerda {
-    border-radius: 0 24px 24px 0;
-    margin-left: calc(50% - 50vw);
-    margin-right: 1rem;
-  }
-  @media (min-width: 1024px) {
-    .folha {
-      border-radius: 32px 0 0 32px;
-      margin-left: calc(100% / 6);
-      padding: clamp(2.5rem, 5vw, 5rem);
-      padding-right: calc(50vw - 50% + clamp(2.5rem, 5vw, 5rem));
-    }
-    .folha-esquerda {
-      border-radius: 0 32px 32px 0;
-      margin-left: calc(50% - 50vw);
-      margin-right: calc(100% / 12);
-      padding-left: calc(50vw - 50% + clamp(2.5rem, 5vw, 5rem));
-      padding-right: clamp(2.5rem, 5vw, 5rem);
-    }
-  }
-
-  /* Laje: o mesmo gesto da folha, em tinta funda. Serve às duas portas. */
-  .laje {
-    position: relative;
-    background-color: var(--color-tinta-funda);
-    border-radius: 24px 0 0 24px;
-    margin-right: calc(50% - 50vw);
-    padding: 2.5rem 1.5rem 3rem;
-  }
-  @media (min-width: 1024px) {
-    .laje {
-      border-radius: 32px 0 0 32px;
-      padding: 4rem 0 6rem clamp(2.5rem, 5vw, 4.5rem);
-    }
-  }
-
-  /* Numeral gigante: marca a seção cortado pela borda de cima. Decorativo, some
-     do leitor de tela e nunca recebe evento. Fica atrás de tudo (z-index 0). */
-  .numeral-gigante {
-    position: absolute;
-    left: -0.04em;
-    top: -0.12em;
-    z-index: 0;
-    font-family: var(--font-destaque);
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(120px, 15vw, 220px);
-    line-height: 1;
-    color: color-mix(in srgb, var(--color-azul) 30%, var(--color-tinta));
-    pointer-events: none;
-    user-select: none;
-  }
-  /* Variante do centro: atrás do cartão de retenção, maior e mais apagado. */
-  .numeral-gigante-centro {
-    left: 50%;
-    top: 54%;
-    transform: translate(-50%, -50%);
-    font-size: clamp(200px, 26vw, 380px);
-    color: color-mix(in srgb, var(--color-azul) 22%, var(--color-tinta));
-  }
-
-  /* Colunas de jornal: no desktop, quatro medidas diferentes separadas por filete.
-     No celular vira pilha com filete horizontal. */
-  .jornal {
-    display: grid;
-    grid-template-columns: 1fr;
-    border-top: 1px solid var(--color-fio-escuro);
-  }
-  .jornal > li { padding: 2rem 0; border-top: 1px solid var(--color-fio-escuro); }
-  .jornal > li:first-child { border-top: 0; }
-  @media (min-width: 1024px) {
-    .jornal { grid-template-columns: 2fr 3fr 3fr 2fr; }
-    .jornal > li { padding: 2rem 1.75rem 0 0; border-top: 0; }
-    .jornal > li + li { border-left: 1px solid var(--color-fio-escuro); padding-left: 1.75rem; }
-  }
-
-  /* Lista editorial: numeral grande à esquerda, texto à direita, feixe correndo na margem. */
-  .lista-editorial {
-    position: relative;
-    display: grid;
-    row-gap: 2rem;
-    padding-left: 1.75rem;
-  }
-  .lista-editorial > li {
-    display: grid;
-    grid-template-columns: 5rem 1fr;
-    column-gap: 1.5rem;
-    align-items: start;
-  }
-  @media (min-width: 1024px) {
-    .lista-editorial { row-gap: 3rem; padding-left: 2.5rem; }
-    .lista-editorial > li { grid-template-columns: 8.75rem 1fr; }
-  }
-
-  /* Feixe: filete com um pulso azul percorrendo. Substitui o SVG medido por JS
-     do painel antigo — aqui é CSS puro, sem cálculo de geometria no cliente. */
-  .feixe {
-    position: relative;
-    background: color-mix(in srgb, currentColor 16%, transparent);
-  }
-  .feixe-v { width: 2px; }
-  .feixe-h { height: 2px; }
-  .feixe::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 2px;
-    background: var(--color-azul);
-    filter: drop-shadow(0 0 6px var(--color-azul));
-    opacity: 0;
-  }
-  .feixe-v::after { top: 0; width: 100%; height: 22%; }
-  .feixe-h::after { left: 0; width: 22%; height: 100%; }
-  @media (prefers-reduced-motion: no-preference) {
-    .feixe::after {
-      opacity: 1;
-      animation: feixe-desce 3.2s linear infinite;
-      animation-delay: var(--atraso, 0s);
-    }
-    .feixe-h::after { animation-name: feixe-corre; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .feixe { background: color-mix(in srgb, var(--color-azul) 70%, transparent); }
-    .feixe::after { display: none; }
-  }
-}
-
-@keyframes feixe-desce {
-  from { top: -22%; }
-  to { top: 100%; }
-}
-@keyframes feixe-corre {
-  from { left: -22%; }
-  to { left: 100%; }
 }

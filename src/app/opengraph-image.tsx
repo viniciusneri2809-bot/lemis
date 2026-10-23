@@ -1,51 +1,58 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { metadados } from "@/lib/conteudo";
+import { hero, interfaceTextos } from "@/lib/conteudo";
 
-export const alt = metadados.ogAlt;
+// A imagem de compartilhamento (1200 × 630), na identidade de 23/10: fundo branco, assinatura em cor,
+// a frase de marca na Plus Jakarta Sans 700 e, à direita, o laço sobre o pontilhado azul do manual (§5).
+// As fontes são instâncias estáticas da variável (o gerador não lê fonte variável).
+export const alt = interfaceTextos.ogAlt;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function Image() {
+export default async function Imagem() {
+  const raiz = process.cwd();
+  const [negrito, medio, assinatura, simbolo] = await Promise.all([
+    readFile(join(raiz, "src/assets/PlusJakartaSans-Bold.ttf")),
+    readFile(join(raiz, "src/assets/PlusJakartaSans-Medium.ttf")),
+    readFile(join(raiz, "public/marca/assinatura-cor.svg"), "utf8"),
+    readFile(join(raiz, "public/marca/simbolo-cor.svg"), "utf8"),
+  ]);
+  const svg = (conteudo: string) => `data:image/svg+xml;base64,${Buffer.from(conteudo).toString("base64")}`;
+
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          position: "relative",
-          background: "#17191D",
-        }}
-      >
-        <svg
-          viewBox="0 0 368 106"
-          width="416"
-          height="120"
-          style={{ position: "absolute", left: 96, top: 96 }}
+      <div style={{ width: "100%", height: "100%", display: "flex", background: "#FFFFFF", fontFamily: "Jakarta" }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: 720, padding: "72px 0 72px 80px" }}>
+          <img src={svg(assinatura)} width={204} height={60} alt="" />
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ fontSize: 64, fontWeight: 700, lineHeight: 1.06, letterSpacing: "-0.035em", color: "#0B1020" }}>{hero.titulo}</div>
+            <div style={{ marginTop: 28, fontSize: 26, fontWeight: 500, lineHeight: 1.3, letterSpacing: "-0.01em", color: "#5A6273" }}>{hero.apoio}</div>
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            margin: "40px 40px 40px 0",
+            borderRadius: 32,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#EDF3FF",
+            backgroundImage: "radial-gradient(circle, rgba(31,94,242,0.22) 1px, transparent 1.4px)",
+            backgroundSize: "14px 14px",
+          }}
         >
-          <g fill="#FFFFFF" fillRule="evenodd">
-            <path d="M4 4H22V75Q22 83 30 83H42V100H28Q4 100 4 76Z" />
-            <path d="M119 70H66C68 81 75 86 86 86C94 86 101 83 107 78L117 89C109 98 98 102 85 102C61 102 47 86 47 64C47 41 62 26 83 26C106 26 119 42 119 64ZM66 57H101C99 47 93 42 83 42C74 42 68 47 66 57Z" />
-            <path d="M132 28H149V37C154 30 161 26 170 26C181 26 190 31 194 39C200 30 208 26 220 26C239 26 249 39 249 59V100H231V61C231 49 227 43 218 43C208 43 201 50 201 62V100H183V61C183 49 179 43 170 43C159 43 150 51 150 64V100H132Z" />
-            <path d="M266 28H284V100H266ZM266 4H284V19H266Z" />
-            <path d="M362 36L353 49C345 44 338 41 330 41C322 41 317 44 317 49C317 54 322 56 334 59C353 63 364 68 364 81C364 95 351 102 331 102C317 102 305 98 295 90L305 77C313 84 322 87 331 87C341 87 346 85 346 80C346 75 340 73 329 71C311 67 299 62 299 49C299 35 311 26 330 26C342 26 353 30 362 36Z" />
-          </g>
-        </svg>
-        <svg
-          viewBox="0 0 640 320"
-          width="760"
-          height="380"
-          fill="none"
-          style={{ position: "absolute", right: -60, bottom: -40 }}
-        >
-          <path
-            d="M40 0v180q0 60 60 60h220q60 0 60-60V60q0-40 40-40h220"
-            stroke="#304CFF"
-            strokeWidth="24"
-          />
-        </svg>
+          <img src={svg(simbolo)} width={280} height={280} alt="" />
+        </div>
       </div>
     ),
-    size,
+    {
+      ...size,
+      fonts: [
+        { name: "Jakarta", data: negrito, weight: 700, style: "normal" },
+        { name: "Jakarta", data: medio, weight: 500, style: "normal" },
+      ],
+    },
   );
 }

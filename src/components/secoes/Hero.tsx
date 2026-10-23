@@ -1,81 +1,32 @@
-import type { CSSProperties } from "react";
-import { Glow } from "@/components/efeitos/Padroes";
-import { Pilula } from "@/components/esquema/Pilula";
-import { FaixaFunil } from "@/components/secoes/FaixaFunil";
-import { Botao } from "@/components/ui/Botao";
-import { Container } from "@/components/ui/Container";
-import { Secao } from "@/components/ui/Secao";
-import { TituloDestaque } from "@/components/ui/TituloDestaque";
-import { LINK_WHATSAPP } from "@/lib/contato";
-import { cta, hero } from "@/lib/conteudo";
+import Image from "next/image";
+import mesa from "@/assets/mesa.webp";
+import { hero } from "@/lib/conteudo";
+import { Celular } from "../Celular";
+import { BotaoWhatsApp } from "../ui/BotaoWhatsApp";
+import { Cabecalho } from "./Cabecalho";
 
-/**
- * O H1 ocupa a largura inteira e o texto de apoio desce para a metade direita: o contraste de
- * escala entre os dois é o que carrega a página, no lugar da caixa que existia à direita.
- * A entrada continua por CSS (`animar="hero"` + `entra-hero`), não por `Revelar`: é o que
- * mantém o LCP pintado no primeiro quadro e o CLS em zero.
- */
+// O hero do protótipo aprovado: a foto da mesa de trabalho (manual §5, luz do dia, de cima), o véu que
+// escurece a esquerda, o título e o celular do painel inclinado à direita. No celular, só o texto sobre
+// a foto, com o véu mais escuro: o aparelho aparece logo abaixo, no palco.
 export function Hero() {
   return (
-    <Secao
-      id="inicio"
-      campo="tinta"
-      ritmo="hero"
-      transbordar
-      fundo={<Glow className="-top-32 right-0 h-[36rem] w-[36rem] opacity-35" />}
-    >
-      <Container className="relative">
-        <Pilula className="entra-hero text-secundario-escuro">{hero.rotulo}</Pilula>
-        <TituloDestaque
-          titulo={hero.titulo}
-          as="h1"
-          classe="t-display"
-          animar="hero"
-          className="mt-6 text-[clamp(2.75rem,12vw,4rem)] text-branco lg:text-[clamp(3rem,7.2vw,7rem)]"
-        />
-        <div className="mt-10 grid lg:grid-cols-12 lg:gap-x-6">
-          <div className="lg:col-span-6 lg:col-start-7">
-            <p
-              className="t-lead medida entra-hero text-secundario-escuro"
-              style={{ "--i": 6 } as CSSProperties}
-            >
-              {hero.paragrafo}
-            </p>
-            <div
-              className="entra-hero mt-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8"
-              style={{ "--i": 8 } as CSSProperties}
-            >
-              <Botao href={LINK_WHATSAPP} externo>
-                {cta.rotulo}
-              </Botao>
-              <a
-                href={hero.secundario.href}
-                className="t-controle group inline-flex items-center gap-2 text-branco underline underline-offset-[0.2em] transition-colors duration-200 hover:text-secundario-escuro"
-              >
-                {hero.secundario.rotulo}
-                <svg
-                  viewBox="0 0 16 16"
-                  width={16}
-                  height={16}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                  focusable="false"
-                  className="transition-transform duration-300 group-hover:translate-y-0.5 motion-reduce:transition-none"
-                >
-                  <path d="M8 3v10M4 9l4 4 4-4" />
-                </svg>
-              </a>
-            </div>
-          </div>
+    <section className="relative isolate overflow-hidden bg-forte">
+      <Image src={mesa} alt="" fill priority placeholder="blur" sizes="100vw" className="-z-20 object-cover" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 veu-hero-celular lg:veu-hero" />
+      <Cabecalho />
+      <div className="mx-auto grid min-h-[640px] max-w-[1440px] items-center px-5 pt-28 pb-16 sm:px-10 lg:min-h-[900px] lg:grid-cols-[minmax(0,560px)_1fr] lg:gap-6 lg:px-14 lg:pt-24">
+        <div className="max-w-[560px]">
+          <h1 className="text-[40px] leading-[1.06] tracking-[-0.035em] text-white sm:text-[52px] lg:text-[60px]">{hero.titulo}</h1>
+          <p className="mt-5 font-titulo text-xl leading-[1.3] font-medium tracking-[-0.01em] text-white lg:text-2xl">{hero.apoio}</p>
+          <BotaoWhatsApp variante="branco" className="mt-10 lg:mt-14">
+            {hero.botao}
+          </BotaoWhatsApp>
+          <p className="mt-5 text-sm text-white">{hero.nota}</p>
         </div>
-      </Container>
-      <div className="entra-hero" style={{ "--i": 10 } as CSSProperties}>
-        <FaixaFunil />
+        <div className="hidden lg:flex lg:justify-start lg:pl-6">
+          <Celular className="chegar" />
+        </div>
       </div>
-    </Secao>
+    </section>
   );
 }
