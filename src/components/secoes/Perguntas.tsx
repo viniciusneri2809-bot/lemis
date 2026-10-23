@@ -1,52 +1,29 @@
-import { Palavras } from "@/components/efeitos/Palavras";
-import { Revelar } from "@/components/efeitos/Revelar";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Container } from "@/components/ui/Container";
-import { Secao } from "@/components/ui/Secao";
 import { perguntas } from "@/lib/conteudo";
+import { Container } from "../ui/Container";
 
-/**
- * Largura total, sem grade de duas colunas: quem chega pela busca, sem vendedor ao lado,
- * resolve a objeção neste acordeão — por isso o site mantém o FAQ que a apresentação irmã
- * não tem.
- */
+// As cinco perguntas, com o título à esquerda (protótipo). <details> nativo: abre pelo teclado e
+// pelo leitor de tela sem JavaScript; a primeira vem aberta, como no protótipo.
 export function Perguntas() {
   return (
-    <Secao id="perguntas" campo="tinta" ritmo="compacto" separador>
-      <Container className="relative z-10">
-        <Revelar>
-          <h2 className="t-display t-display-denso max-w-[20ch]">
-            <Palavras texto={perguntas.titulo} />
-          </h2>
-        </Revelar>
-        <Revelar atraso={0.15} className="mt-16">
-          <Accordion
-            type="single"
-            collapsible
-            defaultValue="pergunta-0"
-            className="border-y border-fio-escuro"
-          >
-            {perguntas.itens.map((item, i) => (
-              <AccordionItem key={item.pergunta} value={`pergunta-${i}`} escuro>
-                <AccordionTrigger escuro className="py-7">
-                  <span className="flex items-start gap-4">
-                    <span
-                      aria-hidden="true"
-                      className="t-destaque t-destaque-claro w-8 shrink-0 text-[1.5rem] leading-[1.1]"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-[clamp(1.25rem,1.8vw,1.625rem)]">{item.pergunta}</span>
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="max-w-[64ch] pl-12">
-                  <p className="t-corpo text-secundario-escuro">{item.resposta}</p>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </Revelar>
+    <section id="perguntas" aria-labelledby="perguntas-titulo" className="pt-10 pb-20 lg:pb-[120px]">
+      <Container className="grid gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-[72px]">
+        <h2 id="perguntas-titulo" className="max-w-[420px] text-[32px] leading-[1.1] tracking-[-0.035em] lg:text-[40px]">
+          {perguntas.titulo}
+        </h2>
+        <div>
+          {perguntas.itens.map((item, i) => (
+            <details key={item.pergunta} open={i === 0} className="group border-b border-linha py-5 first:pt-0">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 rounded-md text-[17px] font-semibold text-forte [&::-webkit-details-marker]:hidden">
+                <h3 className="font-sans text-[17px] font-semibold tracking-normal">{item.pergunta}</h3>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className="shrink-0 text-fraco transition-transform duration-200 ease-saida group-open:rotate-45">
+                  <path d="M9 3v12M3 9h12" />
+                </svg>
+              </summary>
+              <p className="mt-3 max-w-[620px] text-[15.5px] leading-[1.6] text-fraco">{item.resposta}</p>
+            </details>
+          ))}
+        </div>
       </Container>
-    </Secao>
+    </section>
   );
 }

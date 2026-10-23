@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test scripts/contato.test.mjs",
+    "test": "node --test scripts/contato.test.mjs scripts/verificar-marca.test.mjs",
     "verificar": "node scripts/verificar-marca.mjs"
   },
   "dependencies": {

@@ -1,11 +1,4 @@
-import type { ReactNode } from "react";
-
-type Props = { className?: string; children: ReactNode };
-
-export function Container({ className = "", children }: Props) {
-  return (
-    <div className={`mx-auto w-full max-w-[1408px] px-5 md:px-8 lg:px-12 xl:px-16 ${className}`}>
-      {children}
-    </div>
-  );
+// A largura da página: 1440 px com margem de 20 px no celular e de 56 a 136 px no desktop (manual, §4).
+export function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`mx-auto w-full max-w-[1440px] px-5 sm:px-10 lg:px-14 xl:px-[136px] ${className}`}>{children}</div>;
 }

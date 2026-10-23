@@ -1,0 +1,4 @@
+# Lighthouse 12, build de produção local (next start), 23/10/2026. Relatórios completos fora do repositório (base64 grande).
+mobile    performance=96 accessibility=100 best-practices=100 seo=100 LCP 2.7 s CLS 0 TBT 10 ms
+mobile-2  performance=96 accessibility=100 best-practices=100 seo=100 LCP 2.8 s CLS 0 TBT 0 ms
+desktop   performance=100 accessibility=100 best-practices=100 seo=100 LCP 0.6 s CLS 0 TBT 0 ms
