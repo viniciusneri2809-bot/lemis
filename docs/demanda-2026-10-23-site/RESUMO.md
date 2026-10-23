@@ -23,6 +23,17 @@ Branch `feat/site-identidade-nova`, aberta da main em `a30c287` (worktree `~/Pro
 - Contraste dos pares novos ≥ 4,5:1. O mais apertado é branco sobre o topo do degradê, 4,56:1, igual ao manual.
 - Capturas em `capturas/`: desktop 1440 (página inteira), celular 390 (página inteira e telas), menu do celular aberto, tablet 768 e a OG.
 
+## Decisões tomadas pelo Dash Lemis (autorização do Vinicius de 23/10 pela madrugada, via Patrão: "AGILIZA o que tiver de fazer, eu autorizo, só faz tudo")
+
+Cada uma é a recomendação do Dash. Fica a marca abaixo até o sim dele de manhã, que é também o sim para publicar.
+
+1. **Cartão "Investimento" do celular com "R$ 4.820":** mantido. Investimento pede valor em real, e é dado de exemplo marcado na tela, como o resto do celular.
+2. **Tons das etapas do protótipo (verde e laranja claros, texto #B4441A) na paleta:** mantidos. Estão no protótipo aprovado e só aparecem nas três etapas da trilha e no celular, que é o uso que o manual dá às cores de dado.
+3. **Celular no topo da versão de celular:** sem o aparelho. O hero fica só com o texto sobre a foto, e o aparelho vem logo abaixo, no palco; dois celulares seguidos repetiriam a mesma tela.
+4. **Fundo do laço na OG:** liso, azul 50. O gerador da OG não desenha o pontilhado.
+
+Preview de deploy (Vercel, protegido por login da conta): https://apl-digital-rk0rgodzu-viniciusneri2809-bots-projects.vercel.app (commit `6b91ed2`). Preview local: `next start` na porta 3010.
+
 ## Suposições
 
 - [PENDENTE DE VALIDAÇÃO] O cartão "Investimento" do celular mostra "R$ 4.820" · base: a copy troca os rótulos para Contatos, Vendas e Investimento, mas o protótipo tinha "19" (Voltaram) nesse cartão, e investimento pede valor em real; é número de exemplo, marcado "dados de exemplo" na tela (quem valida: Vinicius)
