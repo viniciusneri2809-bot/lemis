@@ -16,7 +16,7 @@ Branch `feat/site-identidade-nova`, aberta da main em `a30c287` (worktree `~/Pro
 
 ## Provas
 
-- `npm test`: 8 de 8, com o teste novo do verificador. `npm run verificar`: ok. `tsc` e `eslint` ok. `next build` ok: página e OG estáticas.
+- `npm test`: 9 de 9, com o teste novo do verificador. Saídas em `saidas.txt`. `npm run verificar`: ok. `tsc` e `eslint` ok. `next build` ok: página e OG estáticas.
 - Detector da impeccable (`detect.mjs`): 0 achados.
 - Lighthouse (build de produção local), em `lighthouse/notas.txt`: celular 96/100/100/100 nas duas medições, LCP 2,7 a 2,8 s, CLS 0; desktop 100/100/100/100, LCP 0,6 s, CLS 0. O piso do PRODUCT.md é desktop 100, celular 96 e CLS 0.
 - Sem rolagem lateral em 320, 390, 768, 1024, 1280 e 1920 px.

@@ -22,12 +22,13 @@ const inter = localFont({
   preload: false,
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+// Sem a variável, o endereço de produção: sem `metadataBase`, o og:image saía como localhost (revisão do Codex).
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lemiscompany.com.br";
 
 export const metadata: Metadata = {
   title: metadados.titulo,
   description: metadados.descricao,
-  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
+  metadataBase: new URL(siteUrl),
   openGraph: {
     title: metadados.titulo,
     description: metadados.descricao,

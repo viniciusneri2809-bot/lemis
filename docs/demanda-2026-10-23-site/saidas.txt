@@ -1,0 +1,44 @@
+# Saídas das provas, 23/10/2026 (worktree feat/site-identidade-nova)
+
+## npm test
+# tests 9
+# pass 9
+# fail 0
+
+## npm run verificar
+Verificação de marca: ok
+
+## detect.mjs (impeccable)
+achados: 0
+
+## next build
+✓ Compiled successfully in 921.7ms
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /apple-icon.png
+├ ○ /icon.svg
+└ ○ /opengraph-image
+
+## og:image (sem NEXT_PUBLIC_SITE_URL)
+<meta property="og:image" content="https://lemiscompany.com.br/opengraph-image?5ef551affe434338"/>
+
+## rolagem lateral (scrollWidth = largura)
+320: 320
+390: 390
+768: 768
+1024: 1024
+1280: 1280
+1920: 1920
+
+## menu do celular
+aberto: true · depois de escolher um link: false
+
+## contraste (WCAG) dos pares novos
+ 5.55  etapa 03, texto sobre branco
+ 5.03  etapa 03, número sobre o tom
+ 5.42  etapa 02, texto sobre o tom
+ 4.79  etapa 01 e etiqueta, azul sobre azul 50
+ 5.71  texto fraco sobre névoa
+ 4.56  branco sobre o topo do degradê
+ 7.61  branco sobre o fim do degradê

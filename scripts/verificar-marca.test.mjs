@@ -31,6 +31,15 @@ test("o azul antigo #304CFF e cor solta reprovam", () => {
   assert.ok(!rodar({ "src/a.css": ".a{color:rgba(48,76,255,.5)}" }).ok);
 });
 
+test("hsl, oklch, nome de cor e paleta padrão do Tailwind reprovam", () => {
+  assert.ok(!rodar({ "src/a.css": ".a{color:hsl(220 90% 50%)}" }).ok);
+  assert.ok(!rodar({ "src/a.css": ".a{color:oklch(0.6 0.2 260)}" }).ok);
+  assert.ok(!rodar({ "src/a.css": ".a{background:navy}" }).ok);
+  assert.ok(!rodar({ "src/a.tsx": '<div className="bg-blue-500" />' }).ok);
+  assert.ok(rodar({ "src/a.css": ".a{color:color-mix(in srgb, #5A6273 45%, transparent)}" }).ok);
+  assert.ok(rodar({ "src/a.tsx": '<div className="bg-azul text-forte" />' }).ok);
+});
+
 test("\"agentes\" está liberado (23/10); \"leads\" e garantia continuam vetados", () => {
   assert.ok(rodar({ "src/a.ts": 'export const f = "Agentes de IA trabalham com o seu time";' }).ok);
   assert.ok(!rodar({ "src/a.ts": 'export const f = "mais leads";' }).ok);

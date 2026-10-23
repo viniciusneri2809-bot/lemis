@@ -104,6 +104,9 @@ for (const caminho of arquivos(src)) {
     for (const m of linha.matchAll(/#([0-9a-fA-F]{6})\b/g)) {
       if (!PALETA.has(m[1].toLowerCase())) problemas.push(`${rel}:${i + 1}: cor fora da paleta #${m[1]}`);
     }
+    if (/\b(?:hsla?|hwb|lab|lch|oklab|oklch|color)\(/i.test(linha.replace(/color-mix\(/g, ""))) problemas.push(`${rel}:${i + 1}: cor em formato fora da trava (use hex ou rgb da paleta)`);
+    if (/\b(?:bg|text|border|ring|fill|stroke|from|via|to|outline|decoration|shadow|divide|accent|caret)-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/.test(linha)) problemas.push(`${rel}:${i + 1}: cor padrão do Tailwind fora da paleta`);
+    if ((rel.endsWith(".css") || /style=\{\{/.test(linha)) && /(?:color|background|fill|stroke|border)[\w-]*\s*:\s*["']?(?:red|blue|green|orange|purple|pink|gray|grey|navy|teal|yellow|black)\b/i.test(linha)) problemas.push(`${rel}:${i + 1}: cor por nome fora da paleta`);
     for (const m of linha.matchAll(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/g)) {
       const hex = hexDe(m[1], m[2], m[3]);
       if (!PALETA.has(hex)) problemas.push(`${rel}:${i + 1}: cor fora da paleta rgb(${m[1]}, ${m[2]}, ${m[3]})`);
